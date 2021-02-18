@@ -14,14 +14,27 @@ variable "cdr_base_url" {
 }
 
 variable "s3creds_credentials" {
-  description = "S3Creds to IAM organization mapping for DICOM Store"
-  type = object({
+  description = "S3Credentials to use for DICOM Store"
+  type = list(object({
     endpoint    = string
     product_key = string
     bucket_name = string
     folder_path = string
     service_id  = string
     private_key = string
-  })
+  }))
   sensitive = true
+  default = []
+}
+
+variable "static_credentials" {
+  description = "Static credentials to use for DICOM Store"
+  type = list(object({
+    endpoint    = string
+    bucket_name = string
+    access_key  = string
+    secret_key  = string
+  }))
+  sensitive = true
+  default   = []
 }

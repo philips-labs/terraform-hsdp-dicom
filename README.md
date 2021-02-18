@@ -6,13 +6,13 @@
 
 | Name | Version |
 |------|---------|
-| hsdp | >= 0.11.2 |
+| hsdp | >= 0.12.2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| hsdp | >= 0.11.2 |
+| hsdp | >= 0.12.2 |
 
 ## Modules
 
@@ -22,10 +22,10 @@ No Modules.
 
 | Name |
 |------|
-| [hsdp_dicom_object_store](https://registry.terraform.io/providers/philips-software/hsdp/0.11.2/docs/resources/dicom_object_store) |
-| [hsdp_dicom_repositiory](https://registry.terraform.io/providers/philips-software/hsdp/0.11.2/docs/resources/dicom_repositiory) |
-| [hsdp_dicom_store_config](https://registry.terraform.io/providers/philips-software/hsdp/0.11.2/docs/resources/dicom_store_config) |
-| [hsdp_s3creds_policy](https://registry.terraform.io/providers/philips-software/hsdp/0.11.2/docs/resources/s3creds_policy) |
+| [hsdp_dicom_object_store](https://registry.terraform.io/providers/philips-software/hsdp/0.12.2/docs/resources/dicom_object_store) |
+| [hsdp_dicom_repository](https://registry.terraform.io/providers/philips-software/hsdp/0.12.2/docs/resources/dicom_repository) |
+| [hsdp_dicom_store_config](https://registry.terraform.io/providers/philips-software/hsdp/0.12.2/docs/resources/dicom_store_config) |
+| [hsdp_s3creds_policy](https://registry.terraform.io/providers/philips-software/hsdp/0.12.2/docs/resources/s3creds_policy) |
 
 ## Inputs
 
@@ -34,14 +34,13 @@ No Modules.
 | cdr\_base\_url | The base URL of the CDR instance to use for DICOM Store | `string` | n/a | yes |
 | dicom\_store\_config\_url | The DICOM Store config URL -- Provided by HSDP | `string` | n/a | yes |
 | iam\_org\_id | The IAM organization you will be onboarding to DICOM Store | `string` | n/a | yes |
-| s3creds\_credentials | S3Creds to IAM organization mapping for DICOM Store | <pre>object({<br>     endpoint = string<br>     product_key = string<br>     bucket_name = string<br>     folder_path = string<br>     service_id = string<br>     private_key = string<br>   })</pre> | `{}` | no |
-| static\_credentials | Static Access to IAM organization mapping for DICOM Store | <pre>object({<br>      endpoint = string<br>      bucket_name = string<br>      access_key = string<br>      secret_key = string<br>   })</pre> | `{}` | no |
+| s3creds\_credentials | S3Credentials to use for DICOM Store | <pre>list(object({<br>    endpoint    = string<br>    product_key = string<br>    bucket_name = string<br>    folder_path = string<br>    service_id  = string<br>    private_key = string<br>  }))</pre> | `[]` | no |
+| static\_credentials | Static credentials to use for DICOM Store | <pre>list(object({<br>    endpoint    = string<br>    bucket_name = string<br>    access_key  = string<br>    secret_key  = string<br>  }))</pre> | `[]` | no |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| hsdp\_s3creds\_policy\_id | The generated S3Creds Policy ID |
+No output.
+
 
 # Contact / Getting help
 
