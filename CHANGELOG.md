@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v0.0.4
+- Fix dependency, should be on config
+
 ## v0.0.3
 - Ensure IAM DICOM Group is in place before onboarding
 

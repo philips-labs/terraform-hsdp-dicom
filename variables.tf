@@ -15,13 +15,13 @@ variable "cdr_base_url" {
 
 variable "user_ids" {
   description = "User IDs that should have write access to the DICOM Store"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 variable "service_ids" {
   description = "Service IDs that should have write access to the DICOM Store"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "s3creds_credentials" {
@@ -35,7 +35,7 @@ variable "s3creds_credentials" {
     private_key = string
   }))
   sensitive = true
-  default = []
+  default   = []
 }
 
 variable "static_credentials" {
