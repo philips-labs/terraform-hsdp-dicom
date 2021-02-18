@@ -20,6 +20,7 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
         name        = "Service name"
       }
   }
+  depends_on = [hsdp_iam_group.dicom_admin]
 }
 
 resource "hsdp_dicom_repository" "s3creds_repository" {
