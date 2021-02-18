@@ -13,6 +13,12 @@ variable "cdr_base_url" {
   type        = string
 }
 
+variable "service_ids" {
+  description = "Service IDs that should have write acces to the DICOM Store"
+  type = list(string)
+  default = []
+}
+
 variable "s3creds_credentials" {
   description = "S3Credentials to use for DICOM Store"
   type = list(object({

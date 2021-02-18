@@ -50,7 +50,6 @@ resource "hsdp_dicom_repository" "static_repository" {
   object_store_id = hsdp_dicom_object_store.static_store[count.index].id
 }
 
-
 resource "hsdp_s3creds_policy" "policy" {
   count       = length(var.s3creds_credentials)
   product_key = var.s3creds_credentials[count.index].product_key
