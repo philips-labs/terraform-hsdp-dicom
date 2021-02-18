@@ -13,8 +13,13 @@ variable "cdr_base_url" {
   type        = string
 }
 
+variable "user_ids" {
+  description = "User IDs that should have write access to the DICOM Store"
+  type = list(string)
+  default = []
+}
 variable "service_ids" {
-  description = "Service IDs that should have write acces to the DICOM Store"
+  description = "Service IDs that should have write access to the DICOM Store"
   type = list(string)
   default = []
 }

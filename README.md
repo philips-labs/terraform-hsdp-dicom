@@ -37,12 +37,14 @@ No Modules.
 | dicom\_store\_config\_url | The DICOM Store config URL -- Provided by HSDP | `string` | n/a | yes |
 | iam\_org\_id | The IAM organization you will be onboarding to DICOM Store | `string` | n/a | yes |
 | s3creds\_credentials | S3Credentials to use for DICOM Store | <pre>list(object({<br>    endpoint    = string<br>    product_key = string<br>    bucket_name = string<br>    folder_path = string<br>    service_id  = string<br>    private_key = string<br>  }))</pre> | `[]` | no |
-| service\_ids | Service IDs that should have write acces to the DICOM Store | `list(string)` | `[]` | no |
+| service\_ids | Service IDs that should have write access to the DICOM Store | `list(string)` | `[]` | no |
 | static\_credentials | Static credentials to use for DICOM Store | <pre>list(object({<br>    endpoint    = string<br>    bucket_name = string<br>    access_key  = string<br>    secret_key  = string<br>  }))</pre> | `[]` | no |
+| user\_ids | User IDs that should have write access to the DICOM Store | `list(string)` | `[]` | no |
 
 ## Outputs
 
 No output.
+
 
 # Contact / Getting help
 
