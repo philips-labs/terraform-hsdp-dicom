@@ -53,12 +53,10 @@ resource "hsdp_iam_proposition" "dicom_prop" {
   name                = "PROP_DICOM_TF"
   description         = "PROP_DICOM_TF - Terraform managed"
   organization_id     = var.iam_org_id
-  global_reference_id = uuid()
 }
 
 resource "hsdp_iam_application" "dicom_app" {
   name                = "APP_DICOM_TF"
   description         = "APP_DICOM_TF - Terraform managed"
   proposition_id      = hsdp_iam_proposition.dicom_prop.id
-  global_reference_id = uuid()
 }
