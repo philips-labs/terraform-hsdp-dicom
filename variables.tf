@@ -1,16 +1,28 @@
 variable "iam_org_id" {
-  description = "The IAM organization you will be onboarding to DICOM Store"
+  description = "IAM organization (GUID) you have provided for DICOM Store onboarding"
   type        = string
+  validation {
+    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.iam_org_id))
+    error_message = "The iam_org_id value must be a valid GUID."
+  }
 }
 
-variable "dicom_store_config_url" {
-  description = "The DICOM Store config URL -- Provided by HSDP"
+variable "dss_config_url" {
+  description = "DICOM Store config URL (Should have received from Onboarding Request)"
   type        = string
+  validation {
+    condition     = can(regex("^https://dss-config", var.dss_config_url))
+    error_message = "The dss_config_url value must be a valid url, starting with \"https://dss-config\"."
+  }
 }
 
 variable "cdr_base_url" {
-  description = "The base URL of the CDR instance to use for DICOM Store"
+  description = "CDR Base URL which is provided for DICOM Store onboarding (E.g: https://cdr-example.us-east.philips-healthsuite.com)"
   type        = string
+  validation {
+    condition     = can(regex("^https://", var.cdr_base_url))
+    error_message = "The cdr_base_url value must be a valid url, starting with \"https://\"."
+  }
 }
 
 variable "user_ids" {
@@ -18,6 +30,7 @@ variable "user_ids" {
   type        = list(string)
   default     = []
 }
+
 variable "service_ids" {
   description = "Service IDs that should have write access to the DICOM Store"
   type        = list(string)

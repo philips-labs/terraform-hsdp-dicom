@@ -1,5 +1,5 @@
 resource "hsdp_dicom_store_config" "config" {
-  config_url      = var.dicom_store_config_url
+  config_url      = var.dss_config_url
   organization_id = var.iam_org_id
 
   depends_on = [hsdp_iam_group.dicom_admin]
@@ -15,7 +15,7 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
     endpoint    = var.s3creds_credentials[count.index].endpoint
     product_key = var.s3creds_credentials[count.index].product_key
     bucket_name = var.s3creds_credentials[count.index].bucket_name
-    folder_path = "/${var.iam_org_id}"
+    folder_path = "/${var.iam_org_id}/"
     service_account {
       service_id  = var.s3creds_credentials[count.index].service_id
       private_key = var.s3creds_credentials[count.index].private_key
@@ -59,7 +59,7 @@ resource "hsdp_s3creds_policy" "policy" {
 {
   "conditions": {
     "managingOrganizations": [ "${var.iam_org_id}" ],
-    "groups": [ "S3CREDS_DICOM" ]
+    "groups": [ "GRP_S3CREDS_DICOM" ]
   },
   "allowed": {
     "resources": [ "${var.iam_org_id}/*" ],
