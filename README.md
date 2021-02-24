@@ -34,7 +34,7 @@ No Modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | cdr\_base\_url | The base URL of the CDR instance to use for DICOM Store | `string` | n/a | yes |
-| dicom\_store\_config\_url | The DICOM Store config URL -- Provided by HSDP | `string` | n/a | yes |
+| dss\_config\_url | The DICOM Store config URL -- Provided by HSDP | `string` | n/a | yes |
 | iam\_org\_id | The IAM organization you will be onboarding to DICOM Store | `string` | n/a | yes |
 | s3creds\_credentials | S3Credentials to use for DICOM Store | <pre>list(object({<br>    endpoint    = string<br>    product_key = string<br>    bucket_name = string<br>    folder_path = string<br>    service_id  = string<br>    private_key = string<br>  }))</pre> | `[]` | no |
 | service\_ids | Service IDs that should have write access to the DICOM Store | `list(string)` | `[]` | no |
@@ -45,6 +45,13 @@ No Modules.
 
 No output.
 
+## Terraform Installation
+Download terraform from https://www.terraform.io/downloads.html and follow the instructions.
+
+## Running Terraform Scripts
+* `terraform init`
+* `terraform plan`
+* `terraform apply`
 
 # Contact / Getting help
 
