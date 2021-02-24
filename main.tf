@@ -59,7 +59,7 @@ resource "hsdp_s3creds_policy" "policy" {
 {
   "conditions": {
     "managingOrganizations": [ "${var.iam_org_id}" ],
-    "groups": [ "GRP_S3CREDS_DICOM" ]
+    "groups": [ "GRP_S3CREDS_DICOM_TF" ]
   },
   "allowed": {
     "resources": [ "${var.iam_org_id}/*" ],
