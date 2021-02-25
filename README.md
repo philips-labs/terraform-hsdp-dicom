@@ -6,7 +6,7 @@
 
 | Name | Version |
 |------|---------|
-| hsdp | >= 0.12.2 |
+| hsdp | >= 0.12.8 |
 
 ## Providers
 
