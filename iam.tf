@@ -26,7 +26,7 @@ resource "hsdp_iam_group" "dicom_cdr" {
   description           = "GRP_DICOM_CDR_TF - Terraform managed"
   roles                 = [hsdp_iam_role.dicom_cdr.id]
   users                 = concat(var.user_ids, [])
-  services              = concat(var.service_ids, [])
+  services              = concat(var.service_ids, [hsdp_iam_service.dicom_cdr_service.id])
   managing_organization = var.iam_org_id
 }
 
@@ -50,13 +50,13 @@ resource "hsdp_iam_service" "dicom_cdr_service" {
 }
 
 resource "hsdp_iam_proposition" "dicom_prop" {
-  name                = "PROP_DICOM_TF"
-  description         = "PROP_DICOM_TF - Terraform managed"
-  organization_id     = var.iam_org_id
+  name            = "PROP_DICOM_TF"
+  description     = "PROP_DICOM_TF - Terraform managed"
+  organization_id = var.iam_org_id
 }
 
 resource "hsdp_iam_application" "dicom_app" {
-  name                = "APP_DICOM_TF"
-  description         = "APP_DICOM_TF - Terraform managed"
-  proposition_id      = hsdp_iam_proposition.dicom_prop.id
+  name           = "APP_DICOM_TF"
+  description    = "APP_DICOM_TF - Terraform managed"
+  proposition_id = hsdp_iam_proposition.dicom_prop.id
 }
