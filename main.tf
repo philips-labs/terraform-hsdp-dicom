@@ -25,10 +25,11 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
 }
 
 resource "hsdp_dicom_repository" "s3creds_repository" {
-  count           = length(var.s3creds_credentials)
-  config_url      = hsdp_dicom_store_config.config.config_url
-  organization_id = var.iam_org_id
-  object_store_id = hsdp_dicom_object_store.s3creds_store[count.index].id
+  count                      = length(var.s3creds_credentials)
+  config_url                 = hsdp_dicom_store_config.config.config_url
+  repository_organization_id = var.s3creds_credentials[count.index].repository_organization_id
+  organization_id            = var.iam_org_id
+  object_store_id            = hsdp_dicom_object_store.s3creds_store[count.index].id
 }
 
 resource "hsdp_dicom_object_store" "static_store" {
@@ -46,10 +47,11 @@ resource "hsdp_dicom_object_store" "static_store" {
 }
 
 resource "hsdp_dicom_repository" "static_repository" {
-  count           = length(var.static_credentials)
-  config_url      = hsdp_dicom_store_config.config.config_url
-  repository_organization_id = var.iam_org_id
-  object_store_id = hsdp_dicom_object_store.static_store[count.index].id
+  count                      = length(var.static_credentials)
+  config_url                 = hsdp_dicom_store_config.config.config_url
+  organization_id            = var.iam_org_id
+  repository_organization_id = var.static_credentials[count.index].repository_organization_id
+  object_store_id            = hsdp_dicom_object_store.static_store[count.index].id
 }
 
 resource "hsdp_s3creds_policy" "policy" {
