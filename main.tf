@@ -48,7 +48,7 @@ resource "hsdp_dicom_object_store" "static_store" {
 resource "hsdp_dicom_repository" "static_repository" {
   count           = length(var.static_credentials)
   config_url      = hsdp_dicom_store_config.config.config_url
-  organization_id = var.iam_org_id
+  repository_organization_id = var.iam_org_id
   object_store_id = hsdp_dicom_object_store.static_store[count.index].id
 }
 
