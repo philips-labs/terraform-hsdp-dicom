@@ -31,6 +31,24 @@ variable "user_ids" {
   default     = []
 }
 
+variable "user_logins" {
+  description = "User login IDs that should have write access to the DICOM Store"
+  type        = list(string)
+  default     = []
+}
+
+variable "admin_ids" {
+  description = "Admin user IDs for DICOM Store"
+  type = list(string)
+  default = []
+}
+
+variable "admin_logins" {
+  description = "Admin login IDS for DICOM Store"
+  type = list(string)
+  default = []
+}
+
 variable "service_ids" {
   description = "Service IDs that should have write access to the DICOM Store"
   type        = list(string)

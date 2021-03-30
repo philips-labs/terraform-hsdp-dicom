@@ -25,7 +25,7 @@ resource "hsdp_iam_group" "dicom_cdr" {
   name                  = "GRP_DICOM_CDR_TF"
   description           = "GRP_DICOM_CDR_TF - Terraform managed"
   roles                 = [hsdp_iam_role.dicom_cdr.id]
-  users                 = concat(var.user_ids, [])
+  users                 = concat(var.user_ids, data.hsdp_iam_user.user.*.id)
   services              = concat(var.service_ids, [hsdp_iam_service.dicom_cdr_service.id])
   managing_organization = var.iam_org_id
 }
@@ -35,7 +35,7 @@ resource "hsdp_iam_group" "dicom_admin" {
   name                  = "GRP_DICOM_ADMIN_TF"
   description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
   roles                 = [hsdp_iam_role.dicom_admin.id]
-  users                 = concat(var.user_ids, [])
+  users                 = concat(var.admin_ids, data.hsdp_iam_user.admin.*.id)
   services              = concat(var.service_ids, [])
   managing_organization = var.iam_org_id
 }
