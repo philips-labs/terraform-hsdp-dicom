@@ -39,14 +39,24 @@ variable "user_logins" {
 
 variable "admin_ids" {
   description = "Admin user IDs for DICOM Store"
+<<<<<<< HEAD
   type        = list(string)
   default     = []
+=======
+  type = list(string)
+  default = []
+>>>>>>> origin/main
 }
 
 variable "admin_logins" {
   description = "Admin login IDS for DICOM Store"
+<<<<<<< HEAD
   type        = list(string)
   default     = []
+=======
+  type = list(string)
+  default = []
+>>>>>>> origin/main
 }
 
 variable "service_ids" {
