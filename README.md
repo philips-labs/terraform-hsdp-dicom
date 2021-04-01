@@ -41,8 +41,9 @@ No Modules.
 | iam\_org\_id | IAM organization (GUID) you have provided for DICOM Store onboarding | `string` | n/a | yes |
 | s3creds\_credentials | S3Credentials to use for DICOM Store | <pre>list(object({<br>    endpoint    = string<br>    product_key = string<br>    bucket_name = string<br>    folder_path = string<br>    service_id  = string<br>    private_key = string<br>  }))</pre> | `[]` | no |
 | service\_ids | Service IDs that should have write access to the DICOM Store | `list(string)` | `[]` | no |
-| static\_credentials | Static credentials to use for DICOM Store | <pre>list(object({<br>    endpoint    = string<br>    bucket_name = string<br>    access_key  = string<br>    secret_key  = string<br>  }))</pre> | `[]` | no |
+| static\_credentials | Static credentials to use for DICOM Store | <pre>list(object({<br>    repository_organization_id = string<br>    endpoint                   = string<br>    bucket_name                = string<br>    access_key                 = string<br>    secret_key                 = string<br>  }))</pre> | `[]` | no |
 | user\_ids | User IDs that should have write access to the DICOM Store | `list(string)` | `[]` | no |
+| user\_logins | User login IDs that should have write access to the DICOM Store | `list(string)` | `[]` | no |
 
 ## Outputs
 
@@ -51,7 +52,7 @@ No Modules.
 | dicom\_cdr\_service\_id | Service ID of the generated CDR service account |
 | dicom\_cdr\_service\_private\_key | Private key of the generated CDR service account |
 
-## Terraform Installation
+# Terraform Installation
 Download terraform from https://www.terraform.io/downloads.html and follow the instructions.
 
 ## Running Terraform Scripts
