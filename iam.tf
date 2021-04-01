@@ -71,7 +71,6 @@ resource "hsdp_iam_group" "grp_dicom_cdr" {
   managing_organization = var.iam_org_id
 }
 
-
 resource "hsdp_iam_role" "role_dicom_admin" {
   name        = "ROLE_DICOM_ADMIN_TF"
   description = "ROLE_DICOM_ADMIN_TF - Terraform managed"
@@ -88,7 +87,6 @@ resource "hsdp_iam_group" "grp_dicom_admin" {
   description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_admin.id]
   users                 = concat(var.admin_ids, data.hsdp_iam_user.admin.*.id)
-  services              = concat(var.service_ids, [])
   managing_organization = var.iam_org_id
 }
 
@@ -123,6 +121,17 @@ resource "hsdp_iam_group" "grp_dicom_users" {
   managing_organization = var.iam_org_id
 }
 
+resource "hsdp_iam_role" "role_dicom_s3creds" {
+  name        = "ROLE_DICOM_S3CREDS_TF"
+  description = "ROLE_DICOM_S3CREDS_TF - Terraform managed"
+
+  permissions = [
+    "S3CREDS_POLICY.ALL",
+    "S3CREDS_ACCESS.GET"
+  ]
+  managing_organization = var.iam_org_id
+}
+
 resource "hsdp_iam_service" "svc_dicom_s3creds" {
   name           = "SVC_DICOM_S3CREDS_TF"
   description    = "SVC_DICOM_S3CREDS_TF - Terraform managed"
@@ -132,21 +141,10 @@ resource "hsdp_iam_service" "svc_dicom_s3creds" {
   default_scopes = ["openid"]
 }
 
-resource "hsdp_iam_role" "role_s3creds_access" {
-  name        = "ROLE_DICOM_S3CREDS_TF"
-  description = "ROLE_DICOM_S3CREDS_TF - Terraform managed"
-
-  permissions = [
-    "S3CREDS_POLICY.ALL",
-    "S3CREDS_ACCESS.GET",
-  ]
-  managing_organization = var.iam_org_id
-}
-
-resource "hsdp_iam_group" "grp_dicm_s3creds" {
+resource "hsdp_iam_group" "grp_dicom_s3creds" {
   name                  = "GRP_DICOM_S3CREDS_TF"
   description           = "GRP_DICOM_S3CREDS_TF - Terraform managed"
-  roles                 = [hsdp_iam_role.role_s3creds_access.id]
+  roles                 = [hsdp_iam_role.role_dicom_s3creds.id]
   users                 = concat(var.admin_ids, data.hsdp_iam_user.admin.*.id)
   services              = [hsdp_iam_service.svc_dicom_s3creds.id]
   managing_organization = var.iam_org_id
