@@ -17,4 +17,5 @@ output "dicom_s3creds_service_id" {
 output "dicom_s3creds_service_private_key" {
   description = "Private key of the generated S3Creds service account"
   value       = hsdp_iam_service.svc_dicom_s3creds.private_key
+  sensitive   = true
 }

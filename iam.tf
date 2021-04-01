@@ -83,12 +83,12 @@ resource "hsdp_iam_role" "role_dicom_admin" {
   managing_organization = var.iam_org_id
 }
 
-resource "hsdp_iam_group" "dicom_cdr" {
-  name                  = "GRP_DICOM_CDR_TF"
-  description           = "GRP_DICOM_CDR_TF - Terraform managed"
-  roles                 = [hsdp_iam_role.dicom_cdr.id]
-  users                 = concat(var.user_ids, data.hsdp_iam_user.user.*.id)
-  services              = concat(var.service_ids, [hsdp_iam_service.dicom_cdr_service.id])
+resource "hsdp_iam_group" "grp_dicom_admin" {
+  name                  = "GRP_DICOM_ADMIN_TF"
+  description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
+  roles                 = [hsdp_iam_role.role_dicom_admin.id]
+  users                 = concat(var.admin_ids, data.hsdp_iam_user.admin.*.id)
+  services              = concat(var.service_ids, [])
   managing_organization = var.iam_org_id
 }
 
@@ -96,7 +96,6 @@ resource "hsdp_iam_role" "role_dicom_users" {
   name        = "ROLE_DICOM_USERS_TF"
   description = "ROLE_DICOM_USERS_TF - Terraform managed"
 
-<<<<<<< HEAD
   permissions = [
     "CP-CONFIG.ALL",
     "CP-DICOM.ALL",
@@ -113,14 +112,6 @@ resource "hsdp_iam_role" "role_dicom_users" {
     "ALL.READ",
     "ALL.WRITE",
   ]
-=======
-resource "hsdp_iam_group" "dicom_admin" {
-  name                  = "GRP_DICOM_ADMIN_TF"
-  description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
-  roles                 = [hsdp_iam_role.dicom_admin.id]
-  users                 = concat(var.admin_ids, data.hsdp_iam_user.admin.*.id)
-  services              = concat(var.service_ids, [])
->>>>>>> origin/main
   managing_organization = var.iam_org_id
 }
 
@@ -141,14 +132,22 @@ resource "hsdp_iam_service" "svc_dicom_s3creds" {
   default_scopes = ["openid"]
 }
 
-resource "hsdp_iam_proposition" "dicom_prop" {
-  name            = "PROP_DICOM_TF"
-  description     = "PROP_DICOM_TF - Terraform managed"
-  organization_id = var.iam_org_id
+resource "hsdp_iam_role" "role_s3creds_access" {
+  name        = "ROLE_DICOM_S3CREDS_TF"
+  description = "ROLE_DICOM_S3CREDS_TF - Terraform managed"
+
+  permissions = [
+    "S3CREDS_POLICY.ALL",
+    "S3CREDS_ACCESS.GET",
+  ]
+  managing_organization = var.iam_org_id
 }
 
-resource "hsdp_iam_application" "dicom_app" {
-  name           = "APP_DICOM_TF"
-  description    = "APP_DICOM_TF - Terraform managed"
-  proposition_id = hsdp_iam_proposition.dicom_prop.id
+resource "hsdp_iam_group" "grp_dicm_s3creds" {
+  name                  = "GRP_DICOM_S3CREDS_TF"
+  description           = "GRP_DICOM_S3CREDS_TF - Terraform managed"
+  roles                 = [hsdp_iam_role.role_s3creds_access.id]
+  users                 = concat(var.admin_ids, data.hsdp_iam_user.admin.*.id)
+  services              = [hsdp_iam_service.svc_dicom_s3creds.id]
+  managing_organization = var.iam_org_id
 }
