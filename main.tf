@@ -13,7 +13,7 @@ resource "hsdp_dicom_store_config" "svc_cdr" {
   organization_id = var.iam_org_id
 
   cdr_service_account {
-    service_id = hsdp_iam_service.svc_dicom_cdr.service_id
+    service_id  = hsdp_iam_service.svc_dicom_cdr.service_id
     private_key = hsdp_iam_service.svc_dicom_cdr.private_key
   }
 
@@ -28,7 +28,7 @@ resource "hsdp_dicom_store_config" "svc_cdr" {
 }
 
 resource "hsdp_dicom_object_store" "s3creds_store" {
-  count = var.iam_org_id != "" ? 1 : 0
+  count           = var.iam_org_id != "" ? 1 : 0
   config_url      = hsdp_dicom_store_config.config.config_url
   organization_id = var.iam_org_id
   description     = "S3Creds Object Store - Terraform managed"
@@ -43,7 +43,7 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
       private_key = hsdp_iam_service.svc_dicom_s3creds.private_key
       # Todo: replace
       access_token_endpoint = "${var.iam_url}/oauth2/access_token"
-      token_endpoint = "${var.iam_url}/oauth2/access_token"
+      token_endpoint        = "${var.iam_url}/oauth2/access_token"
       # Todo: Make name as option field
       name = "Terraform Managed"
     }
@@ -51,7 +51,7 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
 }
 
 resource "hsdp_dicom_repository" "s3creds_repository" {
-  count = var.iam_org_id != "" ? 1 : 0
+  count                      = var.iam_org_id != "" ? 1 : 0
   config_url                 = hsdp_dicom_store_config.config.config_url
   repository_organization_id = var.repository_organization_id
   organization_id            = var.iam_org_id
@@ -59,7 +59,7 @@ resource "hsdp_dicom_repository" "s3creds_repository" {
 }
 
 resource "hsdp_dicom_object_store" "static_store" {
-  count = length(var.static_credentials)
+  count           = length(var.static_credentials)
   config_url      = hsdp_dicom_store_config.config.config_url
   organization_id = var.iam_org_id
   description     = "Static Object Store - Terraform managed"
@@ -73,7 +73,7 @@ resource "hsdp_dicom_object_store" "static_store" {
 }
 
 resource "hsdp_dicom_repository" "static_repository" {
-  count = length(var.static_credentials)
+  count                      = length(var.static_credentials)
   config_url                 = hsdp_dicom_store_config.config.config_url
   organization_id            = var.iam_org_id
   repository_organization_id = var.static_credentials[count.index].repository_organization_id

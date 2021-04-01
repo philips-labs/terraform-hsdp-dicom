@@ -39,14 +39,14 @@ variable "user_logins" {
 
 variable "admin_ids" {
   description = "Admin user IDs for DICOM Store"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "admin_logins" {
   description = "Admin login IDS for DICOM Store"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "service_ids" {
@@ -72,7 +72,7 @@ variable "s3creds_credentials" {
 
 variable "repository_organization_id" {
   description = "DICOM Data Repository organization id"
-  type = string
+  type        = string
 }
 
 variable "static_credentials" {
@@ -105,28 +105,28 @@ variable "iam_url" {
 
 variable "is_instance_shared" {
   description = "Is DICOM instance shared?"
-  type = bool
+  type        = bool
 }
 
 variable "svc_dicom_cdr_id" {
   description = "Is DICOM instance shared?"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "mpi_endpoint" {
   description = "MPI Endpoint (E.g: https://foo.com)"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "s3creds_bucket_endpoint" {
-  type = map
+  type = map(any)
   default = {
-    "us-east": "https://s3-external-1.amazonaws.com",
-    "us-east-1": "https://s3-external-1.amazonaws.com",
-    "eu-west": "https://s3-eu-west-1.amazonaws.com",
-    "eu-west-1": "https://s3-eu-west-1.amazonaws.com"
+    "us-east" : "https://s3-external-1.amazonaws.com",
+    "us-east-1" : "https://s3-external-1.amazonaws.com",
+    "eu-west" : "https://s3-eu-west-1.amazonaws.com",
+    "eu-west-1" : "https://s3-eu-west-1.amazonaws.com"
   }
 }
 
