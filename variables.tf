@@ -39,14 +39,14 @@ variable "user_logins" {
 
 variable "admin_ids" {
   description = "Admin user IDs for DICOM Store"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "admin_logins" {
   description = "Admin login IDS for DICOM Store"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "service_ids" {
@@ -70,11 +70,6 @@ variable "s3creds_credentials" {
   default   = []
 }
 
-variable "repository_organization_id" {
-  description = "DICOM Data Repository organization id"
-  type        = string
-}
-
 variable "static_credentials" {
   description = "Static credentials to use for DICOM Store"
   type = list(object({
@@ -88,24 +83,10 @@ variable "static_credentials" {
   default   = []
 }
 
-variable "s3creds_bucket_name" {
-  description = "S3Creds Bucket Name"
-  type        = string
-}
-
-variable "s3creds_product_key" {
-  description = "S3Creds Product Key"
-  type        = string
-}
-
-variable "iam_url" {
-  description = "IAM Url"
-  type        = string
-}
-
 variable "is_instance_shared" {
   description = "Is DICOM instance shared?"
   type        = bool
+  default     = true
 }
 
 variable "svc_dicom_cdr_id" {
@@ -114,10 +95,10 @@ variable "svc_dicom_cdr_id" {
   default     = ""
 }
 
-variable "mpi_endpoint" {
-  description = "MPI Endpoint (E.g: https://foo.com)"
-  type        = string
-  default     = ""
+variable "mpi_endpoints" {
+  description = "MPI Endpoints"
+  type = list(string)
+  default = []
 }
 
 variable "s3creds_bucket_endpoint" {
@@ -133,4 +114,9 @@ variable "s3creds_bucket_endpoint" {
 variable "region" {
   description = "Region E.g us-east, eu-west"
   type        = string
+}
+
+variable "environment" {
+   description = "Environment e.g. dev, client-test, prod"
+   type = string
 }
