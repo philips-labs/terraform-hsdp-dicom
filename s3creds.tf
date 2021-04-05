@@ -1,6 +1,7 @@
 resource "hsdp_s3creds_policy" "policy" {
-  count = var.iam_org_id != "" ? 1 : 0
-  product_key = var.s3creds_product_key
+  count       = length(var.s3creds_credentials)
+  product_key = var.s3creds_credentials[count.index].product_key
+  # TODO: Check if policy should use var.s3creds_credentials values
   policy      = <<POLICY
 {
   "conditions": {
