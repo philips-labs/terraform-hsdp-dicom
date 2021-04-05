@@ -17,14 +17,13 @@ resource "hsdp_dicom_store_config" "svc_cdr" {
     private_key = hsdp_iam_service.svc_dicom_cdr.private_key
   }
 
-  # Todo: add additional check if the is_instance_shared is false
-  # Todo: fix getting error - Cannot use a string value in for_each. An iterable collection is required.
-  # dynamic "fhir_store" {
-  #   for_each = var.mpi_endpoint
-  #   content {
-  #     mpi_endpoint = fhir_store.value
-  #   }
-  # }
+
+  dynamic "fhir_store" {
+    for_each = var.mpi_endpoints
+    content {
+      mpi_endpoint = fhir_store.value
+    }
+  }
 }
 
 resource "hsdp_dicom_object_store" "s3creds_store" {
