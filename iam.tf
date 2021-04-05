@@ -27,10 +27,12 @@ resource "hsdp_iam_role" "role_org_admin" {
     "USER.READ",
     "USER.WRITE",
     "SERVICE.DELETE",
-    "ROLE.DELETE",
+    # The following role does not currently exist in IAM
+    #"ROLE.DELETE",
     "GROUP.READ",
     "GROUP.WRITE",
-    "GROUP.DELETE"
+    # The following role does not currently exist in IAM
+    #"GROUP.DELETE"
   ]
   managing_organization = var.iam_org_id
 }
