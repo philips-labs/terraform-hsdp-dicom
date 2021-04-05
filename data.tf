@@ -9,3 +9,7 @@ data "hsdp_iam_user" "admin" {
   count      = length(var.admin_logins)
   username   = var.user_logins[count.index]
 }
+
+data "hsdp_config" "iam" {
+  service = "iam"
+}
