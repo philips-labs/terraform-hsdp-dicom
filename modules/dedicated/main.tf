@@ -102,7 +102,7 @@ resource "hsdp_iam_service" "svc_dicom_cdr" {
 
 
 resource "hsdp_dicom_object_store" "s3creds_store" {
-  count           = var.s3creds_bucket_name != "" ? 1 : 0
+  count = var.s3creds_product_key != null ? 1 : 0
   config_url      = var.config_url
   organization_id = var.organization_id
   description     = "S3Creds Object Store - Terraform managed"
@@ -122,7 +122,7 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
 }
 
 resource "hsdp_dicom_repository" "s3creds_repository" {
-  count                      = var.s3creds_bucket_name != "" ? 1 : 0
+  count = var.s3creds_product_key != null ? 1 : 0
   config_url                 = var.config_url
   repository_organization_id = var.organization_id
   organization_id            = var.organization_id

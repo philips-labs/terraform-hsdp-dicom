@@ -18,7 +18,7 @@ variable "s3creds_bucket_name" {
 variable "s3creds_product_key" {
   description = "The S3Cred product key"
   type = string
-  default = ""
+  default = null
 }
 
 variable "config_url" {
