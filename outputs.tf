@@ -1,8 +1,9 @@
 output "dicom_cdr_service_id" {
   description = "Service ID of the generated CDR service account"
-  value       = hsdp_iam_service.svc_dicom_cdr.service_id
+  value       = join("", module.dedicated.*.svc_dicom_cdr_service_id)
 }
 
+/*
 output "dicom_cdr_service_private_key" {
   description = "Private key of the generated CDR service account"
   value       = hsdp_iam_service.svc_dicom_cdr.private_key
@@ -19,3 +20,4 @@ output "dicom_s3creds_service_private_key" {
   value       = hsdp_iam_service.svc_dicom_s3creds.private_key
   sensitive   = true
 }
+*/

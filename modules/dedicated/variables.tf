@@ -12,11 +12,13 @@ variable "organization_id" {
 variable "s3creds_bucket_name" {
   description = "The S3Cred bucket name"
   type = string
+  default = ""
 }
 
 variable "s3creds_product_key" {
   description = "The S3Cred product key"
   type = string
+  default = ""
 }
 
 variable "config_url" {

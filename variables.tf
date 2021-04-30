@@ -76,8 +76,8 @@ variable "managing_root_definition" {
   description = "Root configuration"
   type = object({
     organization_id = string
-    admin_logins = list(string)
-    user_logins = optional(list(string))
+    admin_users = list(string)
+    dicom_users = optional(list(string))
     s3creds_bucket_name = optional(string)
     s3creds_product_key = optional(string)
   })

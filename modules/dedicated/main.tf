@@ -109,8 +109,8 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
 
   s3creds_access {
     endpoint    = lookup(var.s3creds_bucket_endpoint, var.region)
-    product_key = var..s3creds_product_key
-    bucket_name = var..s3creds_bucket_name
+    product_key = var.s3creds_product_key
+    bucket_name = var.s3creds_bucket_name
     folder_path = "/${var.organization_id}/"
     service_account {
       service_id            = hsdp_iam_service.svc_dicom_s3creds.service_id
@@ -122,7 +122,7 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
 }
 
 resource "hsdp_dicom_repository" "s3creds_repository" {
-  count                      = var..s3creds_bucket_name != "" ? 1 : 0
+  count                      = var.s3creds_bucket_name != "" ? 1 : 0
   config_url                 = var.config_url
   repository_organization_id = var.organization_id
   organization_id            = var.organization_id
@@ -135,7 +135,7 @@ resource "hsdp_dicom_store_config" "svc_cdr" {
 
   cdr_service_account {
     service_id  = hsdp_iam_service.svc_dicom_cdr.service_id
-    private_key = hsdp_iam_service.svc_dicom_cdr.svc_dicom_cdr.private_key
+    private_key = hsdp_iam_service.svc_dicom_cdr.private_key
   }
 
   /*

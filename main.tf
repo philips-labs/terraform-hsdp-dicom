@@ -1,19 +1,9 @@
-resource "hsdp_dicom_store_config" "config" {
-
-  config_url = var.dss_config_url
-  organization_id = var.managing_root_definition.organization_id
-
-  depends_on = [
-    hsdp_iam_group.grp_dicom_admin
-  ]
-}
-
 module "dedicated" {
   count = var.is_instance_shared ? 0 : 1 # Dedicated DICOM
-  source = "modules/dedicated"
+  source = "./modules/dedicated"
 
-  admin_users = var.managing_root_definition.admin_logins
-  dicom_users = var.managing_root_definition.user_logins
+  admin_users = var.managing_root_definition.admin_users != null ? var.managing_root_definition.admin_users : []
+  dicom_users = var.managing_root_definition.dicom_users != null ? var.managing_root_definition.dicom_users : []
   organization_id = var.managing_root_definition.organization_id
   region = var.region
   config_url = var.dss_config_url
