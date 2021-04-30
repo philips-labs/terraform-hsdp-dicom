@@ -1,12 +1,3 @@
-variable "iam_org_id" {
-  description = "IAM organization (GUID) you have provided for DICOM Store onboarding"
-  type        = string
-  validation {
-    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.iam_org_id))
-    error_message = "The iam_org_id value must be a valid GUID."
-  }
-}
-
 variable "dss_config_url" {
   description = "DICOM Store config URL (Should have received from Onboarding Request)"
   type        = string
@@ -23,36 +14,6 @@ variable "cdr_base_url" {
     condition     = can(regex("^https://", var.cdr_base_url))
     error_message = "The cdr_base_url value must be a valid url, starting with \"https://\"."
   }
-}
-
-variable "user_ids" {
-  description = "User IDs that should have write access to the DICOM Store"
-  type        = list(string)
-  default     = []
-}
-
-variable "user_logins" {
-  description = "User login IDs that should have write access to the DICOM Store"
-  type        = list(string)
-  default     = []
-}
-
-variable "admin_ids" {
-  description = "Admin user IDs for DICOM Store"
-  type        = list(string)
-  default     = []
-}
-
-variable "admin_logins" {
-  description = "Admin login IDS for DICOM Store"
-  type        = list(string)
-  default     = []
-}
-
-variable "service_ids" {
-  description = "Service IDs that should have write access to the DICOM Store"
-  type        = list(string)
-  default     = []
 }
 
 variable "s3creds_credentials" {
@@ -111,12 +72,45 @@ variable "s3creds_bucket_endpoint" {
   }
 }
 
-variable "region" {
-  description = "Region E.g us-east, eu-west"
-  type        = string
+variable "managing_root_definition" {
+  description = "Root configuration"
+  type = object({
+    organization_id = string
+    admin_logins = list(string)
+    user_logins = optional(list(string))
+    s3creds_bucket_name = optional(string)
+    s3creds_product_key = optional(string)
+  })
+  validation {
+    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.managing_root_definition.organization_id))
+    error_message = "The organization_id value must be a valid GUID."
+  }
 }
 
-variable "environment" {
-   description = "Environment e.g. dev, client-test, prod"
-   type = string
+variable "tenant_definitions" {
+  description = "List of tenant configurations"
+  type = list(object({
+    organization_id = string
+    user_logins = list(string)
+    s3creds_bucket_name = optional(string)
+    s3creds_product_key = optional(string)
+  }))
+  default = []
+}
+
+variable "facility_definitions" {
+  description = "List of facility configurations"
+  type = list(object({
+    tenant_org_id = string
+    facility_org_id = string
+    user_logins = list(string)
+    s3creds_bucket_name = optional(string)
+    s3creds_product_key = optional(string)
+  }))
+  default = []
+}
+
+variable "region" {
+  description = "The HSDP region to deploy into"
+  type = string
 }
