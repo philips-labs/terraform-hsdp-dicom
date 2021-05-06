@@ -4,19 +4,20 @@ variable "user_ids" {
   default     = []
 }
 
-variable "organization_id" {
+variable "managing_root_organization_id" {
   description = "The managing organization id"
   type        = string
-  validation {
-    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.organization_id))
-    error_message = "The organization_id value must be a valid GUID."
-  }
+}
+
+variable "tenant_organization_id" {
+  description = "The tenant organization id"
+  type        = string
 }
 
 variable "s3creds_bucket_name" {
   description = "The S3Cred bucket name"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "s3creds_product_key" {
@@ -30,17 +31,10 @@ variable "dss_config_url" {
   type        = string
 }
 
-variable "use_default_object_store_for_all_orgs" {
-  description = "Use the same object store for all the sub orgs/tenanents"
-  type        = bool
-  default     = false
-}
-
 variable "region" {
   description = "The HSDP Region to deploy to"
   type        = string
 }
-
 
 variable "s3creds_bucket_endpoint" {
   type = map(any)
@@ -62,4 +56,25 @@ variable "dicom_users" {
   description = "DICOM users"
   type        = list(string)
   default     = []
+}
+
+variable "shared_cdr_service_account_id" {
+  description = "CDR Service Account ID which is shared by HSDP Support team after onboarding to Shared instance"
+  type        = string
+  default     = null
+}
+
+variable "is_instance_shared" {
+  description = "Is DICOM instance shared?"
+  type        = bool
+  default     = false
+}
+
+variable "cdr_base_url" {
+  description = "CDR Base URL which is provided for DICOM Store onboarding (E.g: https://cdr-example.us-east.philips-healthsuite.com)"
+  type        = string
+  validation {
+    condition     = can(regex("^https://", var.cdr_base_url))
+    error_message = "The cdr_base_url value must be a valid url, starting with \"https://\"."
+  }
 }

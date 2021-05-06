@@ -10,35 +10,6 @@ resource "hsdp_iam_application" "app_diom" {
   proposition_id = hsdp_iam_proposition.prop_dicom.id
 }
 
-resource "hsdp_iam_role" "role_dicom_users" {
-  name        = "ROLE_DICOM_USERS_TF"
-  description = "ROLE_DICOM_USERS_TF - Terraform managed"
-
-  permissions = [
-    "CP-CONFIG.ALL",
-    "CP-DICOM.ALL",
-    "CP-DICOM.READ",
-    "CP-DICOM.WRITE",
-    "CP-DICOM.SEARCH",
-    "CP-MANAGE.DELETE",
-    "CP-CONFIG.READ",
-    "CP-DICOM.IMPORT",
-    "CP-DICOM.UPLOAD",
-    "CP-DICOM.MERGE",
-    "ALL.READ",
-    "ALL.WRITE",
-  ]
-  managing_organization = var.organization_id
-}
-
-resource "hsdp_iam_group" "grp_dicom_users" {
-  name                  = "GRP_DICOM_USERS_TF"
-  description           = "GRP_DICOM_USERS_TF - Terraform managed"
-  roles                 = [hsdp_iam_role.role_dicom_users.id]
-  users                 = data.hsdp_iam_user.user.*.id
-  managing_organization = var.organization_id
-}
-
 resource "hsdp_iam_role" "role_dicom_cdr" {
   name        = "ROLE_DICOM_CDR_TF"
   description = "ROLE_DICOM_CDR_TF - Terraform managed"
@@ -195,5 +166,34 @@ resource "hsdp_iam_group" "grp_dicom_admin" {
   description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_admin.id]
   users                 = data.hsdp_iam_user.admin.*.id
+  managing_organization = var.organization_id
+}
+
+resource "hsdp_iam_role" "role_dicom_users" {
+  name        = "ROLE_DICOM_USERS_TF"
+  description = "ROLE_DICOM_USERS_TF - Terraform managed"
+
+  permissions = [
+    "CP-CONFIG.ALL",
+    "CP-DICOM.ALL",
+    "CP-DICOM.READ",
+    "CP-DICOM.WRITE",
+    "CP-DICOM.SEARCH",
+    "CP-MANAGE.DELETE",
+    "CP-CONFIG.READ",
+    "CP-DICOM.IMPORT",
+    "CP-DICOM.UPLOAD",
+    "CP-DICOM.MERGE",
+    "ALL.READ",
+    "ALL.WRITE",
+  ]
+  managing_organization = var.organization_id
+}
+
+resource "hsdp_iam_group" "grp_dicom_users" {
+  name                  = "GRP_DICOM_USERS_TF"
+  description           = "GRP_DICOM_USERS_TF - Terraform managed"
+  roles                 = [hsdp_iam_role.role_dicom_users.id]
+  users                 = data.hsdp_iam_user.user.*.id
   managing_organization = var.organization_id
 }

@@ -47,7 +47,7 @@ variable "static_credentials" {
 variable "is_instance_shared" {
   description = "Is DICOM instance shared?"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "svc_dicom_cdr_id" {
@@ -72,29 +72,39 @@ variable "s3creds_bucket_endpoint" {
   }
 }
 
+variable "region" {
+  description = "The HSDP region to deploy into"
+  type        = string
+}
+
+variable "shared_cdr_service_account_id" {
+  description = "CDR Service Account ID which is shared by HSDP Support team after onboarding to Shared instance"
+  type        = string
+  default     = null
+}
+
 variable "managing_root_definition" {
-  description = "Root configuration"
+  description = "Managing Root Configurations"
   type = object({
-    organization_id                        = string
-    admin_users                            = list(string)
-    dicom_users                            = optional(list(string))
-    s3creds_bucket_name                    = optional(string)
-    s3creds_product_key                    = optional(string)
+    organization_id                       = string
+    admin_users                           = list(string)
+    dicom_users                           = optional(list(string))
+    s3creds_bucket_name                   = optional(string)
+    s3creds_product_key                   = optional(string)
     use_default_object_store_for_all_orgs = optional(bool)
   })
-  validation {
-    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.managing_root_definition.organization_id))
-    error_message = "The organization_id value must be a valid GUID."
-  }
+  default = null
 }
 
 variable "tenant_definitions" {
   description = "List of tenant configurations"
   type = list(object({
-    organization_id     = string
-    user_logins         = list(string)
-    s3creds_bucket_name = optional(string)
-    s3creds_product_key = optional(string)
+    managing_root_organization_id = string
+    tenant_organization_id        = string
+    admin_users                   = list(string)
+    dicom_users                   = optional(list(string))
+    s3creds_bucket_name           = optional(string)
+    s3creds_product_key           = optional(string)
   }))
   default = []
 }
@@ -109,9 +119,4 @@ variable "facility_definitions" {
     s3creds_product_key = optional(string)
   }))
   default = []
-}
-
-variable "region" {
-  description = "The HSDP region to deploy into"
-  type        = string
 }
