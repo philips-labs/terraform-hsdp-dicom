@@ -50,16 +50,10 @@ variable "is_instance_shared" {
   default     = false
 }
 
-variable "svc_dicom_cdr_id" {
-  description = "Is DICOM instance shared?"
+variable "mpi_endpoint" {
+  description = "MPI Endpoint"
   type        = string
   default     = ""
-}
-
-variable "mpi_endpoints" {
-  description = "MPI Endpoints"
-  type        = list(string)
-  default     = []
 }
 
 variable "s3creds_bucket_endpoint" {

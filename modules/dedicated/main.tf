@@ -50,7 +50,7 @@ resource "hsdp_dicom_store_config" "svc_cdr" {
 
   /*
   dynamic "fhir_store" {
-    for_each = var.mpi_endpoints
+    for_each = var.mpi_endpoint
     content {
       mpi_endpoint = fhir_store.value
     }
