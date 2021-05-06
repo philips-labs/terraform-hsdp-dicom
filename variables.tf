@@ -58,8 +58,8 @@ variable "svc_dicom_cdr_id" {
 
 variable "mpi_endpoints" {
   description = "MPI Endpoints"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "s3creds_bucket_endpoint" {
@@ -75,11 +75,12 @@ variable "s3creds_bucket_endpoint" {
 variable "managing_root_definition" {
   description = "Root configuration"
   type = object({
-    organization_id = string
-    admin_users = list(string)
-    dicom_users = optional(list(string))
-    s3creds_bucket_name = optional(string)
-    s3creds_product_key = optional(string)
+    organization_id                        = string
+    admin_users                            = list(string)
+    dicom_users                            = optional(list(string))
+    s3creds_bucket_name                    = optional(string)
+    s3creds_product_key                    = optional(string)
+    use_default_object_store_for_all_orgs = optional(bool)
   })
   validation {
     condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.managing_root_definition.organization_id))
@@ -90,8 +91,8 @@ variable "managing_root_definition" {
 variable "tenant_definitions" {
   description = "List of tenant configurations"
   type = list(object({
-    organization_id = string
-    user_logins = list(string)
+    organization_id     = string
+    user_logins         = list(string)
     s3creds_bucket_name = optional(string)
     s3creds_product_key = optional(string)
   }))
@@ -101,9 +102,9 @@ variable "tenant_definitions" {
 variable "facility_definitions" {
   description = "List of facility configurations"
   type = list(object({
-    tenant_org_id = string
-    facility_org_id = string
-    user_logins = list(string)
+    tenant_org_id       = string
+    facility_org_id     = string
+    user_logins         = list(string)
     s3creds_bucket_name = optional(string)
     s3creds_product_key = optional(string)
   }))
@@ -112,5 +113,5 @@ variable "facility_definitions" {
 
 variable "region" {
   description = "The HSDP region to deploy into"
-  type = string
+  type        = string
 }

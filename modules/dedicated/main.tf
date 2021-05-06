@@ -17,13 +17,11 @@ resource "hsdp_iam_role" "role_dicom_users" {
   permissions = [
     "CP-CONFIG.ALL",
     "CP-DICOM.ALL",
-    "CP-MANAGE.ALL",
     "CP-DICOM.READ",
     "CP-DICOM.WRITE",
     "CP-DICOM.SEARCH",
     "CP-MANAGE.DELETE",
     "CP-CONFIG.READ",
-    "CP-CONFIG.WRITE",
     "CP-DICOM.IMPORT",
     "CP-DICOM.UPLOAD",
     "CP-DICOM.MERGE",
@@ -37,8 +35,56 @@ resource "hsdp_iam_group" "grp_dicom_users" {
   name                  = "GRP_DICOM_USERS_TF"
   description           = "GRP_DICOM_USERS_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_users.id]
-  users                 = var.user_ids
+  users                 = data.hsdp_iam_user.user.*.id
   managing_organization = var.organization_id
+}
+
+resource "hsdp_iam_role" "role_dicom_cdr" {
+  name        = "ROLE_DICOM_CDR_TF"
+  description = "ROLE_DICOM_CDR_TF - Terraform managed"
+
+  permissions = [
+    "ALL.READ",
+    "ALL.WRITE"
+  ]
+  managing_organization = var.organization_id
+}
+
+resource "hsdp_iam_group" "grp_dicom_cdr" {
+  name                  = "GRP_DICOM_CDR_TF"
+  description           = "GRP_DICOM_CDR_TF - Terraform managed"
+  roles                 = [hsdp_iam_role.role_dicom_cdr.id]
+  services              = [hsdp_iam_service.svc_dicom_cdr.id]
+  managing_organization = var.organization_id
+}
+
+# This should only be created for dedicated isntances
+resource "hsdp_iam_service" "svc_dicom_cdr" {
+  name           = "SVC_DICOM_CDR_TF"
+  description    = "SVC_DICOM_CDR_TF - Terraform managed"
+  application_id = hsdp_iam_application.app_diom.id
+  validity       = 36
+  scopes         = ["openid"]
+  default_scopes = ["openid"]
+}
+
+resource "hsdp_dicom_store_config" "svc_cdr" {
+  config_url      = var.dss_config_url
+  organization_id = var.organization_id
+
+  cdr_service_account {
+    service_id  = hsdp_iam_service.svc_dicom_cdr.service_id
+    private_key = hsdp_iam_service.svc_dicom_cdr.private_key
+  }
+
+  /*
+  dynamic "fhir_store" {
+    for_each = var.mpi_endpoints
+    content {
+      mpi_endpoint = fhir_store.value
+    }
+  }
+  */
 }
 
 resource "hsdp_iam_role" "role_dicom_s3creds" {
@@ -65,47 +111,15 @@ resource "hsdp_iam_group" "grp_dicom_s3creds" {
   name                  = "GRP_DICOM_S3CREDS_TF"
   description           = "GRP_DICOM_S3CREDS_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_s3creds.id]
-  users                 = var.user_ids
+  users                 = data.hsdp_iam_user.admin.*.id
   services              = [hsdp_iam_service.svc_dicom_s3creds.id]
   managing_organization = var.organization_id
 }
 
-resource "hsdp_iam_role" "role_dicom_cdr" {
-  name        = "ROLE_DICOM_CDR_TF"
-  description = "ROLE_DICOM_CDR_TF - Terraform managed"
-
-  permissions = [
-    "ALL.READ",
-    "ALL.WRITE"
-  ]
-  managing_organization = var.organization_id
-}
-
-resource "hsdp_iam_group" "grp_dicom_cdr" {
-  name                  = "GRP_DICOM_CDR_TF"
-  description           = "GRP_DICOM_CDR_TF - Terraform managed"
-  roles                 = [hsdp_iam_role.role_dicom_cdr.id]
-  # TODO: inject in case of shared instance
-  services              = [hsdp_iam_service.svc_dicom_cdr.id]
-  managing_organization = var.organization_id
-}
-
-# TODO: This should only be created for dedicated isntances
-resource "hsdp_iam_service" "svc_dicom_cdr" {
-  name           = "SVC_DICOM_CDR_TF"
-  description    = "SVC_DICOM_CDR_TF - Terraform managed"
-  application_id = hsdp_iam_application.app_diom.id
-  validity       = 36
-  scopes         = ["openid"]
-  default_scopes = ["openid"]
-}
-
-
 resource "hsdp_dicom_object_store" "s3creds_store" {
-  count = var.s3creds_product_key != null ? 1 : 0
-  config_url      = var.config_url
+  count           = var.s3creds_product_key != null ? 1 : 0
+  config_url      = var.dss_config_url
   organization_id = var.organization_id
-  description     = "S3Creds Object Store - Terraform managed"
 
   s3creds_access {
     endpoint    = lookup(var.s3creds_bucket_endpoint, var.region)
@@ -121,31 +135,13 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
   }
 }
 
+# Few clients uses Default Object Store for all the orgs. Hence it should only created based on need.
 resource "hsdp_dicom_repository" "s3creds_repository" {
-  count = var.s3creds_product_key != null ? 1 : 0
-  config_url                 = var.config_url
+  count                      = var.use_default_object_store_for_all_orgs ? 0 : (var.s3creds_product_key != null ? 1 : 0)
+  config_url                 = var.dss_config_url
   repository_organization_id = var.organization_id
   organization_id            = var.organization_id
   object_store_id            = hsdp_dicom_object_store.s3creds_store[count.index].id
-}
-
-resource "hsdp_dicom_store_config" "svc_cdr" {
-  config_url      = var.config_url
-  organization_id = var.organization_id
-
-  cdr_service_account {
-    service_id  = hsdp_iam_service.svc_dicom_cdr.service_id
-    private_key = hsdp_iam_service.svc_dicom_cdr.private_key
-  }
-
-  /*
-  dynamic "fhir_store" {
-    for_each = var.mpi_endpoints
-    content {
-      mpi_endpoint = fhir_store.value
-    }
-  }
-  */
 }
 
 resource "hsdp_iam_role" "role_org_admin" {
@@ -201,4 +197,3 @@ resource "hsdp_iam_group" "grp_dicom_admin" {
   users                 = data.hsdp_iam_user.admin.*.id
   managing_organization = var.organization_id
 }
-
