@@ -10,7 +10,7 @@ resource "hsdp_iam_application" "app_diom" {
   proposition_id = hsdp_iam_proposition.prop_dicom.id
 }
 
-resource "hsdp_iam_role" "role_dicom_admins" {
+resource "hsdp_iam_role" "role_dicom_admin" {
   name        = "ROLE_DICOM_ADMINS_TF"
   description = "ROLE_DICOM_ADMINS_TF - Terraform managed - tenant"
 
@@ -36,12 +36,12 @@ resource "hsdp_iam_role" "role_dicom_admins" {
 resource "hsdp_iam_group" "grp_dicom_admins" {
   name                  = "GRP_DICOM_ADMINS_TF"
   description           = "GRP_DICOM_ADMINS_TF - Terraform managed - tenant"
-  roles                 = [hsdp_iam_role.role_dicom_admins.id]
+  roles                 = [hsdp_iam_role.role_dicom_admin.id]
   users                 = data.hsdp_iam_user.admin.*.id
   managing_organization = var.tenant_organization_id
 }
 
-resource "hsdp_iam_role" "role_dicom_users" {
+resource "hsdp_iam_role" "role_dicom_user" {
   name        = "ROLE_DICOM_USERS_TF"
   description = "ROLE_DICOM_USERS_TF - Terraform managed - tenant"
 
@@ -63,7 +63,7 @@ resource "hsdp_iam_role" "role_dicom_users" {
 resource "hsdp_iam_group" "grp_dicom_users" {
   name                  = "GRP_DICOM_USERS_TF"
   description           = "GRP_DICOM_USERS_TF - Terraform managed - tenant"
-  roles                 = [hsdp_iam_role.role_dicom_users.id]
+  roles                 = [hsdp_iam_role.role_dicom_user.id]
   users                 = data.hsdp_iam_user.user.*.id
   managing_organization = var.tenant_organization_id
 }
@@ -120,10 +120,11 @@ resource "hsdp_iam_group" "grp_dicom_s3creds" {
   managing_organization = var.tenant_organization_id
 }
 
-resource "hsdp_dicom_object_store" "s3creds_store" {
+resource "hsdp_dicom_object_store" "object_store" {
   count           = var.s3creds_product_key != null ? 1 : 0
   config_url      = var.dss_config_url
   organization_id = var.tenant_organization_id
+  force_delete    = var.force_delete_object_store
 
   s3creds_access {
     endpoint    = lookup(var.s3creds_bucket_endpoint, var.region)
@@ -139,12 +140,12 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
   }
 }
 
-resource "hsdp_dicom_repository" "s3creds_repository" {
+resource "hsdp_dicom_repository" "dicom_repository" {
   count                      = var.s3creds_product_key != null ? 1 : 0
   config_url                 = var.dss_config_url
   repository_organization_id = var.tenant_organization_id
   organization_id            = var.tenant_organization_id
-  object_store_id            = hsdp_dicom_object_store.s3creds_store[count.index].id
+  object_store_id            = hsdp_dicom_object_store.object_store[count.index].id
 }
 
 # Now registry tenant org as parts of managing root org in cdrom

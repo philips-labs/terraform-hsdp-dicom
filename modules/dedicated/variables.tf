@@ -63,3 +63,9 @@ variable "dicom_users" {
   type        = list(string)
   default     = []
 }
+
+variable "force_delete_object_store" {
+  description = "This will delete the object store entry, you will not get the older data which was processed with this entry. Use this with caution."
+  type        = bool
+  default     = false
+}

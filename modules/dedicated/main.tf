@@ -87,10 +87,11 @@ resource "hsdp_iam_group" "grp_dicom_s3creds" {
   managing_organization = var.organization_id
 }
 
-resource "hsdp_dicom_object_store" "s3creds_store" {
+resource "hsdp_dicom_object_store" "object_store" {
   count           = var.s3creds_product_key != null ? 1 : 0
   config_url      = var.dss_config_url
   organization_id = var.organization_id
+  force_delete    = var.force_delete_object_store
 
   s3creds_access {
     endpoint    = lookup(var.s3creds_bucket_endpoint, var.region)
@@ -104,15 +105,16 @@ resource "hsdp_dicom_object_store" "s3creds_store" {
       token_endpoint        = "${data.hsdp_config.iam.url}/authorize/oauth2/token"
     }
   }
+  depends_on = [hsdp_iam_service.svc_dicom_s3creds]
 }
 
 # Few clients uses Default Object Store for all the orgs. Hence it should only created based on need.
-resource "hsdp_dicom_repository" "s3creds_repository" {
+resource "hsdp_dicom_repository" "dicom_repository" {
   count                      = var.use_default_object_store_for_all_orgs ? 0 : (var.s3creds_product_key != null ? 1 : 0)
   config_url                 = var.dss_config_url
   repository_organization_id = var.organization_id
   organization_id            = var.organization_id
-  object_store_id            = hsdp_dicom_object_store.s3creds_store[count.index].id
+  object_store_id            = hsdp_dicom_object_store.object_store[count.index].id
 }
 
 resource "hsdp_iam_role" "role_org_admin" {
@@ -169,7 +171,7 @@ resource "hsdp_iam_group" "grp_dicom_admin" {
   managing_organization = var.organization_id
 }
 
-resource "hsdp_iam_role" "role_dicom_users" {
+resource "hsdp_iam_role" "role_dicom_user" {
   name        = "ROLE_DICOM_USERS_TF"
   description = "ROLE_DICOM_USERS_TF - Terraform managed"
 
@@ -193,7 +195,7 @@ resource "hsdp_iam_role" "role_dicom_users" {
 resource "hsdp_iam_group" "grp_dicom_users" {
   name                  = "GRP_DICOM_USERS_TF"
   description           = "GRP_DICOM_USERS_TF - Terraform managed"
-  roles                 = [hsdp_iam_role.role_dicom_users.id]
+  roles                 = [hsdp_iam_role.role_dicom_user.id]
   users                 = data.hsdp_iam_user.user.*.id
   managing_organization = var.organization_id
 }

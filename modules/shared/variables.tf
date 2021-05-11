@@ -61,3 +61,9 @@ variable "shared_cdr_service_account_id" {
     error_message = "The shared_cdr_service_account_id value must be a valid GUID."
   }
 }
+
+variable "force_delete_object_store" {
+  description = "This will delete the object store entry, you will not get the older data which was processed with this entry. Use this with caution."
+  type        = bool
+  default     = false
+}

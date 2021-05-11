@@ -78,3 +78,9 @@ variable "cdr_base_url" {
     error_message = "The cdr_base_url value must be a valid url, starting with \"https://\"."
   }
 }
+
+variable "force_delete_object_store" {
+  description = "This will delete the object store entry, you will not get the older data which was processed with this entry. Use this with caution."
+  type        = bool
+  default     = false
+}
