@@ -14,6 +14,10 @@ resource "hsdp_iam_role" "role_dicom_cdr" {
   name        = "ROLE_DICOM_CDR_TF"
   description = "ROLE_DICOM_CDR_TF - Terraform managed"
 
+  lifecycle {
+    ignore_changes = [description]
+  }
+
   permissions = [
     "ALL.READ",
     "ALL.WRITE"
@@ -155,6 +159,10 @@ resource "hsdp_iam_group" "grp_org_admin" {
 resource "hsdp_iam_role" "role_dicom_admin" {
   name        = "ROLE_DICOM_ADMIN_TF"
   description = "ROLE_DICOM_ADMIN_TF - Terraform managed"
+
+  lifecycle {
+    ignore_changes = [description]
+  }
 
   permissions = [
     "CP-CONFIG.SERVICEADMIN",
