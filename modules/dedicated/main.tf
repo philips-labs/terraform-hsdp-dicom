@@ -109,7 +109,6 @@ resource "hsdp_dicom_object_store" "object_store" {
       token_endpoint        = "${data.hsdp_config.iam.url}/authorize/oauth2/token"
     }
   }
-  depends_on = [hsdp_iam_service.svc_dicom_s3creds]
 }
 
 # Few clients uses Default Object Store for all the orgs. Hence it should only created based on need.
@@ -128,7 +127,8 @@ resource "hsdp_iam_role" "role_org_admin" {
   permissions = [
     "APPLICATION.READ",
     "APPLICATION.WRITE",
-    "APPLICATION.DELETE",
+    # The following role does not currently exist in IAM
+    #"APPLICATION.DELETE",
     "CLIENT.READ",
     "CLIENT.WRITE",
     "PERMISSION.READ",
