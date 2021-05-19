@@ -1,3 +1,8 @@
+variable "region" {
+  description = "The HSDP region to deploy into"
+  type        = string
+}
+
 variable "dss_config_url" {
   description = "DICOM Store config URL (Should have received from Onboarding Request)"
   type        = string
@@ -14,34 +19,6 @@ variable "cdr_base_url" {
     condition     = can(regex("^https://", var.cdr_base_url))
     error_message = "The cdr_base_url value must be a valid url, starting with \"https://\"."
   }
-}
-
-variable "s3creds_credentials" {
-  description = "S3Credentials to use for DICOM Store"
-  type = list(object({
-    repository_organization_id = string
-    endpoint                   = string
-    product_key                = string
-    bucket_name                = string
-    folder_path                = string
-    service_id                 = string
-    private_key                = string
-  }))
-  sensitive = true
-  default   = []
-}
-
-variable "static_credentials" {
-  description = "Static credentials to use for DICOM Store"
-  type = list(object({
-    repository_organization_id = string
-    endpoint                   = string
-    bucket_name                = string
-    access_key                 = string
-    secret_key                 = string
-  }))
-  sensitive = true
-  default   = []
 }
 
 variable "is_instance_shared" {
@@ -66,11 +43,6 @@ variable "s3creds_bucket_endpoint" {
   }
 }
 
-variable "region" {
-  description = "The HSDP region to deploy into"
-  type        = string
-}
-
 variable "shared_cdr_service_account_id" {
   description = "CDR Service Account ID which is shared by HSDP Support team after onboarding to Shared instance"
   type        = string
@@ -85,7 +57,9 @@ variable "managing_root_definition" {
     dicom_users                           = optional(list(string))
     s3creds_bucket_name                   = optional(string)
     s3creds_product_key                   = optional(string)
+    force_delete_object_store             = optional(bool)
     use_default_object_store_for_all_orgs = optional(bool)
+    repository_organization_id            = optional(string)
   })
   default = null
 }
@@ -99,6 +73,8 @@ variable "tenant_definitions" {
     dicom_users                   = optional(list(string))
     s3creds_bucket_name           = optional(string)
     s3creds_product_key           = optional(string)
+    force_delete_object_store     = optional(bool)
+    repository_organization_id    = optional(string)
   }))
   default = []
 }
@@ -106,11 +82,13 @@ variable "tenant_definitions" {
 variable "facility_definitions" {
   description = "List of facility configurations"
   type = list(object({
-    tenant_org_id       = string
-    facility_org_id     = string
-    user_logins         = list(string)
-    s3creds_bucket_name = optional(string)
-    s3creds_product_key = optional(string)
+    tenant_org_id              = string
+    facility_org_id            = string
+    user_logins                = list(string)
+    s3creds_bucket_name        = optional(string)
+    s3creds_product_key        = optional(string)
+    force_delete_object_store  = optional(bool)
+    repository_organization_id = optional(string)
   }))
   default = []
 }

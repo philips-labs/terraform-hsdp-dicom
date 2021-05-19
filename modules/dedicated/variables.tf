@@ -1,7 +1,6 @@
-variable "user_ids" {
-  description = "List of users"
-  type        = list(string)
-  default     = []
+variable "region" {
+  description = "The HSDP Region to deploy to"
+  type        = string
 }
 
 variable "organization_id" {
@@ -11,6 +10,16 @@ variable "organization_id" {
     condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.organization_id))
     error_message = "The organization_id value must be a valid GUID."
   }
+}
+
+variable "repository_organization_id" {
+  description = "The data organization id"
+  type        = string
+  validation {
+    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.repository_organization_id))
+    error_message = "The repository_organization_id value must be a valid GUID."
+  }
+  default = null
 }
 
 variable "s3creds_bucket_name" {
@@ -25,6 +34,12 @@ variable "s3creds_product_key" {
   default     = null
 }
 
+variable "force_delete_object_store" {
+  description = "This will delete the object store entry, you will not get the older data which was processed with this entry. Use this with caution."
+  type        = bool
+  default     = false
+}
+
 variable "dss_config_url" {
   description = "DICOM Store config URL"
   type        = string
@@ -35,12 +50,6 @@ variable "use_default_object_store_for_all_orgs" {
   type        = bool
   default     = false
 }
-
-variable "region" {
-  description = "The HSDP Region to deploy to"
-  type        = string
-}
-
 
 variable "s3creds_bucket_endpoint" {
   type = map(any)
@@ -62,10 +71,4 @@ variable "dicom_users" {
   description = "DICOM users"
   type        = list(string)
   default     = []
-}
-
-variable "force_delete_object_store" {
-  description = "This will delete the object store entry, you will not get the older data which was processed with this entry. Use this with caution."
-  type        = bool
-  default     = false
 }

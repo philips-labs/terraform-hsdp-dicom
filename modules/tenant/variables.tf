@@ -1,17 +1,33 @@
-variable "user_ids" {
-  description = "List of users"
-  type        = list(string)
-  default     = []
+variable "region" {
+  description = "The HSDP Region to deploy to"
+  type        = string
 }
 
 variable "managing_root_organization_id" {
   description = "The managing organization id"
   type        = string
+  validation {
+    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.managing_root_organization_id))
+    error_message = "The managing_root_organization_id value must be a valid GUID."
+  }
 }
 
 variable "tenant_organization_id" {
   description = "The tenant organization id"
   type        = string
+  validation {
+    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.tenant_organization_id))
+    error_message = "The tenant_organization_id value must be a valid GUID."
+  }
+}
+
+variable "repository_organization_id" {
+  description = "The data organization id"
+  type        = string
+  validation {
+    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.repository_organization_id))
+    error_message = "The data org value must be a valid GUID."
+  }
 }
 
 variable "s3creds_bucket_name" {
@@ -31,11 +47,6 @@ variable "dss_config_url" {
   type        = string
 }
 
-variable "region" {
-  description = "The HSDP Region to deploy to"
-  type        = string
-}
-
 variable "s3creds_bucket_endpoint" {
   type = map(any)
   default = {
@@ -44,18 +55,6 @@ variable "s3creds_bucket_endpoint" {
     "eu-west" : "https://s3-eu-west-1.amazonaws.com",
     "eu-west-1" : "https://s3-eu-west-1.amazonaws.com"
   }
-}
-
-variable "admin_users" {
-  description = "Admin users"
-  type        = list(string)
-  default     = []
-}
-
-variable "dicom_users" {
-  description = "DICOM users"
-  type        = list(string)
-  default     = []
 }
 
 variable "shared_cdr_service_account_id" {
@@ -83,4 +82,16 @@ variable "force_delete_object_store" {
   description = "This will delete the object store entry, you will not get the older data which was processed with this entry. Use this with caution."
   type        = bool
   default     = false
+}
+
+variable "admin_users" {
+  description = "Admin users"
+  type        = list(string)
+  default     = []
+}
+
+variable "dicom_users" {
+  description = "DICOM users"
+  type        = list(string)
+  default     = []
 }

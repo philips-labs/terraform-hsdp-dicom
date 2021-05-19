@@ -49,7 +49,7 @@ resource "hsdp_dicom_store_config" "svc_cdr" {
 
   cdr_service_account {
     service_id  = hsdp_iam_service.svc_dicom_cdr.service_id
-    private_key = hsdp_iam_service.svc_dicom_cdr.private_key
+    private_key = replace(hsdp_iam_service.svc_dicom_cdr.private_key, "\n", "")
   }
 
   /*
@@ -104,7 +104,7 @@ resource "hsdp_dicom_object_store" "object_store" {
     folder_path = "/${var.organization_id}/"
     service_account {
       service_id            = hsdp_iam_service.svc_dicom_s3creds.service_id
-      private_key           = hsdp_iam_service.svc_dicom_s3creds.private_key
+      private_key           = replace(hsdp_iam_service.svc_dicom_s3creds.private_key, "\n", "")
       access_token_endpoint = "${data.hsdp_config.iam.url}/oauth2/access_token"
       token_endpoint        = "${data.hsdp_config.iam.url}/authorize/oauth2/token"
     }
@@ -113,9 +113,9 @@ resource "hsdp_dicom_object_store" "object_store" {
 
 # Few clients uses Default Object Store for all the orgs. Hence it should only created based on need.
 resource "hsdp_dicom_repository" "dicom_repository" {
-  count                      = var.use_default_object_store_for_all_orgs ? 0 : (var.s3creds_product_key != null ? 1 : 0)
+  count                      = !(var.use_default_object_store_for_all_orgs == null || var.use_default_object_store_for_all_orgs == false) ? 0 : (var.s3creds_product_key != null ? 1 : 0)
   config_url                 = var.dss_config_url
-  repository_organization_id = var.organization_id
+  repository_organization_id = var.repository_organization_id
   organization_id            = var.organization_id
   object_store_id            = hsdp_dicom_object_store.object_store[count.index].id
 }

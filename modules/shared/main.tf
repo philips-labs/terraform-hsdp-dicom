@@ -141,7 +141,7 @@ resource "hsdp_dicom_object_store" "object_store" {
 resource "hsdp_dicom_repository" "dicom_repository" {
   count                      = var.s3creds_product_key != null ? 1 : 0
   config_url                 = var.dss_config_url
-  repository_organization_id = var.organization_id
+  repository_organization_id = var.repository_organization_id
   organization_id            = var.organization_id
   object_store_id            = hsdp_dicom_object_store.object_store[count.index].id
 }
