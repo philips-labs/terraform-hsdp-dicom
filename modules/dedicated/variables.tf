@@ -72,3 +72,9 @@ variable "dicom_users" {
   type        = list(string)
   default     = []
 }
+
+variable "random_prefix" {
+  description = "Prefix names with a random prefix"
+  type        = bool
+  default     = false
+}

@@ -12,6 +12,7 @@ module "dedicated" {
   force_delete_object_store             = var.managing_root_definition.force_delete_object_store
   use_default_object_store_for_all_orgs = var.managing_root_definition.use_default_object_store_for_all_orgs
   repository_organization_id            = var.managing_root_definition.repository_organization_id
+  random_prefix                         = var.random_prefix
 }
 
 

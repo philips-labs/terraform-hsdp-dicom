@@ -1,3 +1,11 @@
+locals {
+   prefix = var.random_prefix ? "${random_id.id.hex}_" : ""
+}
+
+resource "random_id" "id" {
+  byte_length = 8
+}
+
 resource "hsdp_iam_proposition" "prop_dicom" {
   name            = "PROP_DICOM_TF"
   description     = "PROP_DICOM_TF - Terraform managed"
@@ -26,7 +34,7 @@ resource "hsdp_iam_role" "role_dicom_cdr" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_cdr" {
-  name                  = "GRP_DICOM_CDR_TF"
+  name                  = "${local.prefix}GRP_DICOM_CDR_TF"
   description           = "GRP_DICOM_CDR_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_cdr.id]
   services              = [hsdp_iam_service.svc_dicom_cdr.id]
@@ -35,7 +43,7 @@ resource "hsdp_iam_group" "grp_dicom_cdr" {
 
 # This should only be created for dedicated isntances
 resource "hsdp_iam_service" "svc_dicom_cdr" {
-  name           = "SVC_DICOM_CDR_TF"
+  name           = "${local.prefix}SVC_DICOM_CDR_TF"
   description    = "SVC_DICOM_CDR_TF - Terraform managed"
   application_id = hsdp_iam_application.app_dicom.id
   validity       = 36
@@ -74,7 +82,7 @@ resource "hsdp_iam_role" "role_dicom_s3creds" {
 }
 
 resource "hsdp_iam_service" "svc_dicom_s3creds" {
-  name           = "SVC_DICOM_S3CREDS_TF"
+  name           = "${local.prefix}SVC_DICOM_S3CREDS_TF"
   description    = "SVC_DICOM_S3CREDS_TF - Terraform managed"
   application_id = hsdp_iam_application.app_dicom.id
   validity       = 36
@@ -83,7 +91,7 @@ resource "hsdp_iam_service" "svc_dicom_s3creds" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_s3creds" {
-  name                  = "GRP_DICOM_S3CREDS_TF"
+  name                  = "${local.prefix}GRP_DICOM_S3CREDS_TF"
   description           = "GRP_DICOM_S3CREDS_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_s3creds.id]
   users                 = data.hsdp_iam_user.admin.*.id
@@ -149,7 +157,7 @@ resource "hsdp_iam_role" "role_org_admin" {
 }
 
 resource "hsdp_iam_group" "grp_org_admin" {
-  name                  = "GRP_ORG_ADMIN_TF"
+  name                  = "${local.prefix}GRP_ORG_ADMIN_TF"
   description           = "GRP_ORG_ADMIN_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_org_admin.id]
   users                 = data.hsdp_iam_user.admin.*.id
@@ -172,7 +180,7 @@ resource "hsdp_iam_role" "role_dicom_admin" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_admin" {
-  name                  = "GRP_DICOM_ADMIN_TF"
+  name                  = "${local.prefix}GRP_DICOM_ADMIN_TF"
   description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_admin.id]
   users                 = data.hsdp_iam_user.admin.*.id
@@ -201,7 +209,7 @@ resource "hsdp_iam_role" "role_dicom_user" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_users" {
-  name                  = "GRP_DICOM_USERS_TF"
+  name                  = "${local.prefix}GRP_DICOM_USERS_TF"
   description           = "GRP_DICOM_USERS_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_user.id]
   users                 = data.hsdp_iam_user.user.*.id
