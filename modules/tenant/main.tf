@@ -133,7 +133,7 @@ resource "hsdp_dicom_object_store" "object_store" {
     folder_path = "/${var.tenant_organization_id}/"
     service_account {
       service_id            = hsdp_iam_service.svc_dicom_s3creds.service_id
-      private_key           = hsdp_iam_service.svc_dicom_s3creds.private_key
+      private_key           = replace(hsdp_iam_service.svc_dicom_s3creds.private_key, "\n", "")
       access_token_endpoint = "${data.hsdp_config.iam.url}/oauth2/access_token"
       token_endpoint        = "${data.hsdp_config.iam.url}/authorize/oauth2/token"
     }
@@ -148,9 +148,14 @@ resource "hsdp_dicom_repository" "dicom_repository" {
   object_store_id            = hsdp_dicom_object_store.object_store[count.index].id
 }
 
-# Now registry tenant org as parts of managing root org in cdrom
-resource "hsdp_cdr_org" "tenant" {
-  fhir_store = var.cdr_base_url
+data "hsdp_cdr_fhir_store" "cdr_onboard" {
+  base_url    = var.cdr_base_url
+  fhir_org_id = var.managing_root_organization_id
+}
+
+# Now register tenant org as parts of managing root org in cdr
+resource "hsdp_cdr_org" "tenant_onboard" {
+  fhir_store = data.hsdp_cdr_fhir_store.cdr_onboard.endpoint
   org_id     = var.tenant_organization_id
 
   name    = "Tenant Org - ${var.tenant_organization_id}"

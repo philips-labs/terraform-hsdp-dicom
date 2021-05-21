@@ -69,7 +69,7 @@ variable "tenant_definitions" {
   type = list(object({
     managing_root_organization_id = string
     tenant_organization_id        = string
-    admin_users                   = list(string)
+    admin_users                   = optional(list(string))
     dicom_users                   = optional(list(string))
     s3creds_bucket_name           = optional(string)
     s3creds_product_key           = optional(string)

@@ -21,6 +21,7 @@ module "shared" {
 
   region                        = var.region
   dss_config_url                = var.dss_config_url
+  cdr_base_url                  = var.cdr_base_url
   admin_users                   = var.managing_root_definition.admin_users != null ? var.managing_root_definition.admin_users : []
   dicom_users                   = var.managing_root_definition.dicom_users != null ? var.managing_root_definition.dicom_users : []
   organization_id               = var.managing_root_definition.organization_id

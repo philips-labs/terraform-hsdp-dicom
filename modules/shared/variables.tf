@@ -15,11 +15,7 @@ variable "organization_id" {
 variable "repository_organization_id" {
   description = "The data organization id"
   type        = string
-  validation {
-    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.repository_organization_id))
-    error_message = "The repository_organization_id value must be a valid GUID."
-  }
-  default = null
+  default     = null
 }
 
 variable "s3creds_bucket_name" {
@@ -74,4 +70,13 @@ variable "dicom_users" {
   description = "DICOM users"
   type        = list(string)
   default     = []
+}
+
+variable "cdr_base_url" {
+  description = "CDR Base URL which is provided for DICOM Store onboarding (E.g: https://cdr-example.us-east.philips-healthsuite.com)"
+  type        = string
+  validation {
+    condition     = can(regex("^https://", var.cdr_base_url))
+    error_message = "The cdr_base_url value must be a valid url, starting with \"https://\"."
+  }
 }

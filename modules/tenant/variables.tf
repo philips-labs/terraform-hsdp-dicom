@@ -24,10 +24,7 @@ variable "tenant_organization_id" {
 variable "repository_organization_id" {
   description = "The data organization id"
   type        = string
-  validation {
-    condition     = can(regex("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", var.repository_organization_id))
-    error_message = "The data org value must be a valid GUID."
-  }
+  default     = null
 }
 
 variable "s3creds_bucket_name" {

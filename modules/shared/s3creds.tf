@@ -7,7 +7,7 @@ resource "hsdp_s3creds_policy" "policy" {
 {
   "conditions": {
     "managingOrganizations": [ "${var.organization_id}" ],
-    "groups": [ "${hsdp_iam_group.grp_dicom_s3creds.name}" ]
+    "groups": [ "${hsdp_iam_group.grp_dicom_s3creds[count.index].name}" ]
   },
   "allowed": {
     "resources": [ "/${var.organization_id}/*" ],
