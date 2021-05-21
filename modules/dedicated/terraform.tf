@@ -6,5 +6,8 @@ terraform {
       source  = "philips-software/hsdp"
       version = ">= 0.16.1"
     }
+    random = {
+      source = "hashicorp/random"
+    }
   }
 }

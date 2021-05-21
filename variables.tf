@@ -92,3 +92,9 @@ variable "facility_definitions" {
   }))
   default = []
 }
+
+variable "random_prefix" {
+  description = "Prefix resource names with a random value to prevent conflicts"
+  type        = bool
+  default     = false
+}
