@@ -32,7 +32,8 @@ resource "hsdp_iam_role" "role_dicom_admin" {
     "ALL.WRITE",
     # Below permissions are needed for CDR onboarding
     "ORGANIZATION.READ",
-    "ORGANIZATION.WRITE"
+    "ORGANIZATION.WRITE",
+    "S3CREDS_POLICY.ALL"
   ]
   managing_organization = var.organization_id
 }
@@ -95,6 +96,8 @@ resource "hsdp_iam_group" "grp_dicom_cdr" {
   roles                 = [hsdp_iam_role.role_dicom_cdr.id]
   services              = [var.shared_cdr_service_account_id]
   managing_organization = var.organization_id
+
+  depends_on = [hsdp_iam_role.role_dicom_cdr]
 }
 
 resource "hsdp_iam_service" "svc_dicom_s3creds" {
@@ -139,7 +142,7 @@ resource "hsdp_dicom_object_store" "object_store" {
     endpoint    = lookup(var.s3creds_bucket_endpoint, var.region)
     product_key = var.s3creds_product_key
     bucket_name = var.s3creds_bucket_name
-    folder_path = "/${var.organization_id}/"
+    folder_path = "${var.organization_id}/"
     service_account {
       service_id            = hsdp_iam_service.svc_dicom_s3creds[count.index].service_id
       private_key           = replace(hsdp_iam_service.svc_dicom_s3creds[count.index].private_key, "\n", "")

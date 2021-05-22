@@ -43,12 +43,6 @@ variable "s3creds_bucket_endpoint" {
   }
 }
 
-variable "shared_cdr_service_account_id" {
-  description = "CDR Service Account ID which is shared by HSDP Support team after onboarding to Shared instance"
-  type        = string
-  default     = null
-}
-
 variable "managing_root_definition" {
   description = "Managing Root Configurations"
   type = object({
@@ -60,6 +54,8 @@ variable "managing_root_definition" {
     force_delete_object_store             = optional(bool)
     use_default_object_store_for_all_orgs = optional(bool)
     repository_organization_id            = optional(string)
+    shared_cdr_service_account_id         = optional(string)
+    mpi_endpoint                          = optional(string)
   })
   default = null
 }

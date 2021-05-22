@@ -1,6 +1,6 @@
 resource "hsdp_iam_proposition" "prop_dicom" {
   name            = "PROP_DICOM_TF"
-  description     = "PROP_DICOM_TF - Terraform managed"
+  description     = "PROP_DICOM_TF - Terraform managed - tenant"
   organization_id = var.tenant_organization_id
 }
 
@@ -46,7 +46,6 @@ resource "hsdp_iam_role" "role_dicom_user" {
   description = "ROLE_DICOM_USERS_TF - Terraform managed - tenant"
 
   permissions = [
-    "CP-CONFIG.ALL",
     "CP-DICOM.ALL",
     "CP-DICOM.SEARCH",
     "CP-MANAGE.DELETE",
@@ -65,29 +64,6 @@ resource "hsdp_iam_group" "grp_dicom_users" {
   description           = "GRP_DICOM_USERS_TF - Terraform managed - tenant"
   roles                 = [hsdp_iam_role.role_dicom_user.id]
   users                 = data.hsdp_iam_user.user.*.id
-  managing_organization = var.tenant_organization_id
-}
-
-# Create the CDR Group and Role and assign the service id which is received by HSDP Support team
-# This is ONLY needed for every new Tenant Onboarding
-resource "hsdp_iam_role" "role_dicom_cdr" {
-  count       = var.is_instance_shared ? 1 : 0
-  name        = "ROLE_DICOM_CDR_TF"
-  description = "ROLE_DICOM_CDR_TF - Terraform managed - tenant"
-
-  permissions = [
-    "ALL.READ",
-    "ALL.WRITE"
-  ]
-  managing_organization = var.tenant_organization_id
-}
-
-resource "hsdp_iam_group" "grp_dicom_cdr" {
-  count                 = var.is_instance_shared ? 1 : 0
-  name                  = "GRP_DICOM_CDR_TF"
-  description           = "GRP_DICOM_CDR_TF - Terraform managed - tenant"
-  roles                 = [hsdp_iam_role.role_dicom_cdr[count.index].id]
-  services              = [var.shared_cdr_service_account_id]
   managing_organization = var.tenant_organization_id
 }
 
@@ -130,7 +106,7 @@ resource "hsdp_dicom_object_store" "object_store" {
     endpoint    = lookup(var.s3creds_bucket_endpoint, var.region)
     product_key = var.s3creds_product_key
     bucket_name = var.s3creds_bucket_name
-    folder_path = "/${var.tenant_organization_id}/"
+    folder_path = "${var.tenant_organization_id}/"
     service_account {
       service_id            = hsdp_iam_service.svc_dicom_s3creds.service_id
       private_key           = replace(hsdp_iam_service.svc_dicom_s3creds.private_key, "\n", "")

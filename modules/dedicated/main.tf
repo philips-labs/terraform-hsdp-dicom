@@ -1,5 +1,5 @@
 locals {
-   prefix = var.random_prefix ? "${random_id.id.hex}_" : ""
+  prefix = var.random_prefix ? "${random_id.id.hex}_" : ""
 }
 
 resource "random_id" "id" {
@@ -109,7 +109,7 @@ resource "hsdp_dicom_object_store" "object_store" {
     endpoint    = lookup(var.s3creds_bucket_endpoint, var.region)
     product_key = var.s3creds_product_key
     bucket_name = var.s3creds_bucket_name
-    folder_path = "/${var.organization_id}/"
+    folder_path = "${var.organization_id}/"
     service_account {
       service_id            = hsdp_iam_service.svc_dicom_s3creds.service_id
       private_key           = replace(hsdp_iam_service.svc_dicom_s3creds.private_key, "\n", "")
@@ -182,7 +182,7 @@ resource "hsdp_iam_role" "role_dicom_admin" {
 resource "hsdp_iam_group" "grp_dicom_admin" {
   name                  = "${local.prefix}GRP_DICOM_ADMIN_TF"
   description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
-  roles                 = [hsdp_iam_role.role_dicom_admin.id]
+  roles                 = [hsdp_iam_role.role_dicom_admin.id, hsdp_iam_role.role_dicom_user.id]
   users                 = data.hsdp_iam_user.admin.*.id
   managing_organization = var.organization_id
 }
@@ -192,7 +192,6 @@ resource "hsdp_iam_role" "role_dicom_user" {
   description = "ROLE_DICOM_USERS_TF - Terraform managed"
 
   permissions = [
-    "CP-CONFIG.ALL",
     "CP-DICOM.ALL",
     "CP-DICOM.READ",
     "CP-DICOM.WRITE",
@@ -204,6 +203,7 @@ resource "hsdp_iam_role" "role_dicom_user" {
     "CP-DICOM.MERGE",
     "ALL.READ",
     "ALL.WRITE",
+    "S3CREDS_POLICY.ALL"
   ]
   managing_organization = var.organization_id
 }

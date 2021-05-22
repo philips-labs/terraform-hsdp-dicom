@@ -10,7 +10,7 @@ resource "hsdp_s3creds_policy" "policy" {
     "groups": [ "${hsdp_iam_group.grp_dicom_s3creds.name}" ]
   },
   "allowed": {
-    "resources": [ "/${var.tenant_organization_id}/*" ],
+    "resources": [ "${var.tenant_organization_id}/*" ],
     "actions": [
       "ALL_BUCKET",
       "GET",

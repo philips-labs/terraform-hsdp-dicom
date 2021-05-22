@@ -13,8 +13,8 @@ module "dedicated" {
   use_default_object_store_for_all_orgs = var.managing_root_definition.use_default_object_store_for_all_orgs
   repository_organization_id            = var.managing_root_definition.repository_organization_id
   random_prefix                         = var.random_prefix
+  mpi_endpoint                          = var.managing_root_definition.mpi_endpoint
 }
-
 
 module "shared" {
   count  = var.is_instance_shared && var.managing_root_definition != null ? 1 : 0 # Shared DICOM
@@ -29,8 +29,9 @@ module "shared" {
   repository_organization_id    = var.managing_root_definition.repository_organization_id
   s3creds_bucket_name           = var.managing_root_definition.s3creds_bucket_name
   s3creds_product_key           = var.managing_root_definition.s3creds_product_key
-  shared_cdr_service_account_id = var.shared_cdr_service_account_id
   force_delete_object_store     = var.managing_root_definition.force_delete_object_store
+  shared_cdr_service_account_id = var.managing_root_definition.shared_cdr_service_account_id
+
 }
 
 module "tenant" {
@@ -46,7 +47,6 @@ module "tenant" {
   tenant_organization_id        = var.tenant_definitions[count.index].tenant_organization_id
   s3creds_bucket_name           = var.tenant_definitions[count.index].s3creds_bucket_name
   s3creds_product_key           = var.tenant_definitions[count.index].s3creds_product_key
-  shared_cdr_service_account_id = var.shared_cdr_service_account_id
   force_delete_object_store     = var.tenant_definitions[count.index].force_delete_object_store
   repository_organization_id    = var.tenant_definitions[count.index].repository_organization_id
 }
