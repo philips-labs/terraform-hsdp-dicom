@@ -1,77 +1,52 @@
-resource "hsdp_dicom_store_config" "config" {
-  config_url      = var.dss_config_url
-  organization_id = var.iam_org_id
+module "dedicated" {
+  count  = var.is_instance_shared ? 0 : (var.managing_root_definition != null ? 1 : 0) # Dedicated DICOM
+  source = "./modules/dedicated"
 
-  depends_on = [hsdp_iam_group.dicom_admin]
+  region                                = var.region
+  dss_config_url                        = var.dss_config_url
+  admin_users                           = var.managing_root_definition.admin_users != null ? var.managing_root_definition.admin_users : []
+  dicom_users                           = var.managing_root_definition.dicom_users != null ? var.managing_root_definition.dicom_users : []
+  organization_id                       = var.managing_root_definition.organization_id
+  s3creds_bucket_name                   = var.managing_root_definition.s3creds_bucket_name
+  s3creds_product_key                   = var.managing_root_definition.s3creds_product_key
+  force_delete_object_store             = var.managing_root_definition.force_delete_object_store
+  use_default_object_store_for_all_orgs = var.managing_root_definition.use_default_object_store_for_all_orgs
+  repository_organization_id            = var.managing_root_definition.repository_organization_id
+  random_prefix                         = var.random_prefix
+  mpi_endpoint                          = var.managing_root_definition.mpi_endpoint
 }
 
-resource "hsdp_dicom_object_store" "s3creds_store" {
-  count           = length(var.s3creds_credentials)
-  config_url      = hsdp_dicom_store_config.config.config_url
-  organization_id = var.iam_org_id
-  description     = "S3Creds Object Store -- Terraform managed"
+module "shared" {
+  count  = var.is_instance_shared && var.managing_root_definition != null ? 1 : 0 # Shared DICOM
+  source = "./modules/shared"
 
-  s3creds_access {
-    endpoint    = var.s3creds_credentials[count.index].endpoint
-    product_key = var.s3creds_credentials[count.index].product_key
-    bucket_name = var.s3creds_credentials[count.index].bucket_name
-    folder_path = "/${var.iam_org_id}/"
-    service_account {
-      service_id  = var.s3creds_credentials[count.index].service_id
-      private_key = var.s3creds_credentials[count.index].private_key
-      name        = "Service name"
-    }
-  }
+  region                        = var.region
+  dss_config_url                = var.dss_config_url
+  cdr_base_url                  = var.cdr_base_url
+  admin_users                   = var.managing_root_definition.admin_users != null ? var.managing_root_definition.admin_users : []
+  dicom_users                   = var.managing_root_definition.dicom_users != null ? var.managing_root_definition.dicom_users : []
+  organization_id               = var.managing_root_definition.organization_id
+  repository_organization_id    = var.managing_root_definition.repository_organization_id
+  s3creds_bucket_name           = var.managing_root_definition.s3creds_bucket_name
+  s3creds_product_key           = var.managing_root_definition.s3creds_product_key
+  force_delete_object_store     = var.managing_root_definition.force_delete_object_store
+  shared_cdr_service_account_id = var.managing_root_definition.shared_cdr_service_account_id
+
 }
 
-resource "hsdp_dicom_repository" "s3creds_repository" {
-  count                      = length(var.s3creds_credentials)
-  config_url                 = hsdp_dicom_store_config.config.config_url
-  repository_organization_id = var.s3creds_credentials[count.index].repository_organization_id
-  organization_id            = var.iam_org_id
-  object_store_id            = hsdp_dicom_object_store.s3creds_store[count.index].id
-}
+module "tenant" {
+  source = "./modules/tenant"
 
-resource "hsdp_dicom_object_store" "static_store" {
-  count           = length(var.static_credentials)
-  config_url      = hsdp_dicom_store_config.config.config_url
-  organization_id = var.iam_org_id
-  description     = "Static Object Store -- Terraform managed"
-
-  static_access {
-    endpoint    = var.static_credentials[count.index].endpoint
-    bucket_name = var.static_credentials[count.index].bucket_name
-    access_key  = var.static_credentials[count.index].access_key
-    secret_key  = var.static_credentials[count.index].secret_key
-  }
-}
-
-resource "hsdp_dicom_repository" "static_repository" {
-  count                      = length(var.static_credentials)
-  config_url                 = hsdp_dicom_store_config.config.config_url
-  organization_id            = var.iam_org_id
-  repository_organization_id = var.static_credentials[count.index].repository_organization_id
-  object_store_id            = hsdp_dicom_object_store.static_store[count.index].id
-}
-
-resource "hsdp_s3creds_policy" "policy" {
-  count       = length(var.s3creds_credentials)
-  product_key = var.s3creds_credentials[count.index].product_key
-  policy      = <<POLICY
-{
-  "conditions": {
-    "managingOrganizations": [ "${var.iam_org_id}" ],
-    "groups": [ "GRP_S3CREDS_DICOM_TF" ]
-  },
-  "allowed": {
-    "resources": [ "${var.iam_org_id}/*" ],
-    "actions": [
-      "GET",
-      "PUT",
-      "LIST",
-      "DELETE"
-    ]
-  }
-}
-POLICY
+  count                         = length(var.tenant_definitions)
+  region                        = var.region
+  dss_config_url                = var.dss_config_url
+  cdr_base_url                  = var.cdr_base_url
+  admin_users                   = var.tenant_definitions[count.index].admin_users != null ? var.tenant_definitions[count.index].admin_users : []
+  dicom_users                   = var.tenant_definitions[count.index].dicom_users != null ? var.tenant_definitions[count.index].dicom_users : []
+  managing_root_organization_id = var.tenant_definitions[count.index].managing_root_organization_id
+  tenant_organization_id        = var.tenant_definitions[count.index].tenant_organization_id
+  s3creds_bucket_name           = var.tenant_definitions[count.index].s3creds_bucket_name
+  s3creds_product_key           = var.tenant_definitions[count.index].s3creds_product_key
+  force_delete_object_store     = var.tenant_definitions[count.index].force_delete_object_store
+  repository_organization_id    = var.tenant_definitions[count.index].repository_organization_id
 }
