@@ -92,3 +92,9 @@ variable "dicom_users" {
   type        = list(string)
   default     = []
 }
+
+variable "purge_cdr_data" {
+  description = "Force delete CDR data"
+  default     = false
+  type        = bool
+}

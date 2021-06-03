@@ -29,6 +29,7 @@ resource "hsdp_iam_role" "role_dicom_admin" {
     "CP-DICOM.MERGE",
     "ALL.READ",
     "ALL.WRITE",
+    "ORGANIZATION.PURGE"
   ]
   managing_organization = var.tenant_organization_id
 }
@@ -137,5 +138,7 @@ resource "hsdp_cdr_org" "tenant_onboard" {
   name    = "Tenant Org - ${var.tenant_organization_id}"
   part_of = var.managing_root_organization_id
 
-  purge_delete = false
+  purge_delete = var.purge_cdr_data
+
+  depends_on = [hsdp_iam_group.grp_dicom_admins]
 }
