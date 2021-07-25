@@ -14,6 +14,7 @@ module "dedicated" {
   repository_organization_id            = var.managing_root_definition.repository_organization_id
   random_prefix                         = var.random_prefix
   mpi_endpoint                          = var.managing_root_definition.mpi_endpoint
+  purge_cdr_data                        = var.managing_root_definition.purge_cdr_data
 }
 
 module "shared" {
@@ -31,7 +32,7 @@ module "shared" {
   s3creds_product_key           = var.managing_root_definition.s3creds_product_key
   force_delete_object_store     = var.managing_root_definition.force_delete_object_store
   shared_cdr_service_account_id = var.managing_root_definition.shared_cdr_service_account_id
-
+  purge_cdr_data                = var.managing_root_definition.purge_cdr_data
 }
 
 module "tenant" {
@@ -49,4 +50,5 @@ module "tenant" {
   s3creds_product_key           = var.tenant_definitions[count.index].s3creds_product_key
   force_delete_object_store     = var.tenant_definitions[count.index].force_delete_object_store
   repository_organization_id    = var.tenant_definitions[count.index].repository_organization_id
+  purge_cdr_data                = var.tenant_definitions[count.index].purge_cdr_data
 }

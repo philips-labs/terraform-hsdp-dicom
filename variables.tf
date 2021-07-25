@@ -56,6 +56,7 @@ variable "managing_root_definition" {
     repository_organization_id            = optional(string)
     shared_cdr_service_account_id         = optional(string)
     mpi_endpoint                          = optional(string)
+    purge_cdr_data                        = optional(bool)
   })
   default = null
 }
@@ -71,6 +72,7 @@ variable "tenant_definitions" {
     s3creds_product_key           = optional(string)
     force_delete_object_store     = optional(bool)
     repository_organization_id    = optional(string)
+    purge_cdr_data                = optional(bool)
   }))
   default = []
 }

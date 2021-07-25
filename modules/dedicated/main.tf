@@ -150,8 +150,11 @@ resource "hsdp_iam_role" "role_org_admin" {
     #"ROLE.DELETE",
     "GROUP.READ",
     "GROUP.WRITE",
-    # The following role does not currently exist in IAM
-    #"GROUP.DELETE"
+    # Below permissions are needed for CDR onboarding and offboarding
+    "ORGANIZATION.READ",
+    "ORGANIZATION.WRITE",
+    "ORGANIZATION.PURGE",
+    "PATIENT.PURGE"
   ]
   managing_organization = var.organization_id
 }

@@ -94,7 +94,7 @@ variable "dicom_users" {
 }
 
 variable "purge_cdr_data" {
-  description = "Force delete CDR data"
+  description = "Force delete CDR data for offboarding"
   default     = false
   type        = bool
 }

@@ -4,7 +4,7 @@ resource "hsdp_iam_proposition" "prop_dicom" {
   organization_id = var.tenant_organization_id
 }
 
-resource "hsdp_iam_application" "app_diom" {
+resource "hsdp_iam_application" "app_dicom" {
   name           = "APP_DICOM_TF"
   description    = "APP_DICOM_TF - Terraform managed"
   proposition_id = hsdp_iam_proposition.prop_dicom.id
@@ -29,7 +29,11 @@ resource "hsdp_iam_role" "role_dicom_admin" {
     "CP-DICOM.MERGE",
     "ALL.READ",
     "ALL.WRITE",
-    "ORGANIZATION.PURGE"
+    # Below permissions are needed for CDR onboarding and offboarding
+    "ORGANIZATION.READ",
+    "ORGANIZATION.WRITE",
+    "ORGANIZATION.PURGE",
+    "PATIENT.PURGE"
   ]
   managing_organization = var.tenant_organization_id
 }
@@ -82,7 +86,7 @@ resource "hsdp_iam_role" "role_dicom_s3creds" {
 resource "hsdp_iam_service" "svc_dicom_s3creds" {
   name           = "SVC_DICOM_S3CREDS_TF"
   description    = "SVC_DICOM_S3CREDS_TF - Terraform managed - tenant"
-  application_id = hsdp_iam_application.app_diom.id
+  application_id = hsdp_iam_application.app_dicom.id
   validity       = 36
   scopes         = ["openid"]
   default_scopes = ["openid"]

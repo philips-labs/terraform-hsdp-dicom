@@ -4,7 +4,7 @@ resource "hsdp_iam_proposition" "prop_dicom" {
   organization_id = var.organization_id
 }
 
-resource "hsdp_iam_application" "app_diom" {
+resource "hsdp_iam_application" "app_dicom" {
   name           = "APP_DICOM_TF"
   description    = "APP_DICOM_TF - Terraform managed"
   proposition_id = hsdp_iam_proposition.prop_dicom.id
@@ -30,10 +30,12 @@ resource "hsdp_iam_role" "role_dicom_admin" {
     "CP-DICOM.MERGE",
     "ALL.READ",
     "ALL.WRITE",
-    # Below permissions are needed for CDR onboarding
+    "S3CREDS_POLICY.ALL",
+    # Below permissions are needed for CDR onboarding and offboarding
     "ORGANIZATION.READ",
     "ORGANIZATION.WRITE",
-    "S3CREDS_POLICY.ALL"
+    "ORGANIZATION.PURGE",
+    "PATIENT.PURGE"
   ]
   managing_organization = var.organization_id
 }
@@ -104,7 +106,7 @@ resource "hsdp_iam_service" "svc_dicom_s3creds" {
   count          = var.s3creds_product_key != null ? 1 : 0
   name           = "SVC_DICOM_S3CREDS_TF"
   description    = "SVC_DICOM_S3CREDS_TF - Terraform managed - shared"
-  application_id = hsdp_iam_application.app_diom.id
+  application_id = hsdp_iam_application.app_dicom.id
   validity       = 36
   scopes         = ["openid"]
   default_scopes = ["openid"]
@@ -170,8 +172,8 @@ data "hsdp_cdr_fhir_store" "cdr_onboard" {
 resource "hsdp_cdr_org" "root_onboard" {
   fhir_store   = data.hsdp_cdr_fhir_store.cdr_onboard.endpoint
   org_id       = var.organization_id
-  name         = "Manaing Org - ${var.organization_id}"
-  purge_delete = false
+  name         = "Managing Org - ${var.organization_id}"
+  purge_delete = var.purge_cdr_data
 
   depends_on = [hsdp_iam_group.grp_dicom_admins]
 }

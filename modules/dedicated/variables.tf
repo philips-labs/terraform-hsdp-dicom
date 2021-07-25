@@ -79,3 +79,9 @@ variable "mpi_endpoint" {
   description = "MPI Endpoint"
   default     = ""
 }
+
+variable "purge_cdr_data" {
+  description = "Force delete CDR data for offboarding"
+  default     = false
+  type        = bool
+}

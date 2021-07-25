@@ -80,3 +80,9 @@ variable "cdr_base_url" {
     error_message = "The cdr_base_url value must be a valid url, starting with \"https://\"."
   }
 }
+
+variable "purge_cdr_data" {
+  description = "Force delete CDR data for offboarding"
+  default     = false
+  type        = bool
+}
