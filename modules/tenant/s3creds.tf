@@ -3,6 +3,8 @@ resource "hsdp_s3creds_policy" "policy" {
 
   product_key = var.s3creds_product_key
 
+  depends_on = [hsdp_iam_group.grp_dicom_admins]
+
   policy = <<POLICY
 {
   "conditions": {

@@ -1,3 +1,11 @@
+locals {
+  prefix = var.random_prefix ? "${random_id.id.hex}_" : ""
+}
+
+resource "random_id" "id" {
+  byte_length = 8
+}
+
 resource "hsdp_iam_proposition" "prop_dicom" {
   name            = "PROP_DICOM_TF"
   description     = "PROP_DICOM_TF - Terraform managed - tenant"
@@ -29,6 +37,7 @@ resource "hsdp_iam_role" "role_dicom_admin" {
     "CP-DICOM.MERGE",
     "ALL.READ",
     "ALL.WRITE",
+    "S3CREDS_POLICY.ALL",
     # Below permissions are needed for CDR onboarding and offboarding
     "ORGANIZATION.READ",
     "ORGANIZATION.WRITE",
@@ -39,7 +48,7 @@ resource "hsdp_iam_role" "role_dicom_admin" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_admins" {
-  name                  = "GRP_DICOM_ADMINS_TF"
+  name                  = "${local.prefix}GRP_DICOM_ADMINS_TF"
   description           = "GRP_DICOM_ADMINS_TF - Terraform managed - tenant"
   roles                 = [hsdp_iam_role.role_dicom_admin.id]
   users                 = data.hsdp_iam_user.admin.*.id
@@ -65,7 +74,7 @@ resource "hsdp_iam_role" "role_dicom_user" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_users" {
-  name                  = "GRP_DICOM_USERS_TF"
+  name                  = "${local.prefix}GRP_DICOM_USERS_TF"
   description           = "GRP_DICOM_USERS_TF - Terraform managed - tenant"
   roles                 = [hsdp_iam_role.role_dicom_user.id]
   users                 = data.hsdp_iam_user.user.*.id
@@ -93,7 +102,7 @@ resource "hsdp_iam_service" "svc_dicom_s3creds" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_s3creds" {
-  name                  = "GRP_DICOM_S3CREDS_TF"
+  name                  = "${local.prefix}GRP_DICOM_S3CREDS_TF"
   description           = "GRP_DICOM_S3CREDS_TF - Terraform managed - tenant"
   roles                 = [hsdp_iam_role.role_dicom_s3creds.id]
   users                 = data.hsdp_iam_user.admin.*.id

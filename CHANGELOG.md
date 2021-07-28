@@ -3,7 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
-## v0.1.1
+## v0.1.3
+- Fixed missing permissions and dependency for s3creds policy creation.
+- Fixed https://github.com/philips-labs/terraform-hsdp-dicom/issues/4
+- Upgraded HSDP Provider Version
+
+## v0.1.2
 - Fixed CDR offboarding. Added missing permissions.
 - Fixed https://github.com/philips-labs/terraform-hsdp-dicom/issues/3
 
