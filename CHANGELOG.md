@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+## v0.1.4
+- Fixed https://github.com/philips-software/terraform-provider-hsdp/issues/96
+
 ## v0.1.3
 - Fixed missing permissions and dependency for s3creds policy creation.
 - Fixed https://github.com/philips-labs/terraform-hsdp-dicom/issues/4

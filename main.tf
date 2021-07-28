@@ -44,7 +44,8 @@ module "tenant" {
   cdr_base_url                  = var.cdr_base_url
   admin_users                   = var.tenant_definitions[count.index].admin_users != null ? var.tenant_definitions[count.index].admin_users : []
   dicom_users                   = var.tenant_definitions[count.index].dicom_users != null ? var.tenant_definitions[count.index].dicom_users : []
-  managing_root_organization_id = var.tenant_definitions[count.index].managing_root_organization_id
+  # managing_root_organization_id = var.tenant_definitions[count.index].managing_root_organization_id
+  managing_root_organization_id = module.shared[0].managing_root_organization_id
   tenant_organization_id        = var.tenant_definitions[count.index].tenant_organization_id
   s3creds_bucket_name           = var.tenant_definitions[count.index].s3creds_bucket_name
   s3creds_product_key           = var.tenant_definitions[count.index].s3creds_product_key
