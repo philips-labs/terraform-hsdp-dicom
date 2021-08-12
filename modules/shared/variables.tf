@@ -92,3 +92,9 @@ variable "random_prefix" {
   type        = bool
   default     = false
 }
+
+variable "allow_data_store" {
+  description = "Create object store at managing root organization"
+  type        = bool
+  default     = false
+}

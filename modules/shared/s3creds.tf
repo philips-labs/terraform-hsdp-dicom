@@ -2,13 +2,13 @@ resource "hsdp_s3creds_policy" "policy" {
   count = var.s3creds_product_key != null ? 1 : 0
 
   product_key = var.s3creds_product_key
-  depends_on  = [hsdp_iam_group.grp_dicom_admins]
+  depends_on  = [hsdp_iam_group.grp_dicom_admins, hsdp_dicom_object_store.object_store]
 
   policy = <<POLICY
 {
   "conditions": {
     "managingOrganizations": [ "${var.organization_id}" ],
-    "groups": [ "${hsdp_iam_group.grp_dicom_s3creds[count.index].name}" ]
+    "groups": [ "${hsdp_iam_group.grp_dicom_s3creds.name}" ]
   },
   "allowed": {
     "resources": [ "${var.organization_id}/*" ],

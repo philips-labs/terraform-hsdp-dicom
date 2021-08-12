@@ -28,7 +28,10 @@ resource "hsdp_iam_role" "role_dicom_cdr" {
 
   permissions = [
     "ALL.READ",
-    "ALL.WRITE"
+    "ALL.WRITE",
+    "TASK.READ",
+    "TASK.WRITE",
+    "CP-DICOM.UPLOAD"
   ]
   managing_organization = var.organization_id
 }
@@ -100,7 +103,7 @@ resource "hsdp_iam_group" "grp_dicom_s3creds" {
 }
 
 resource "hsdp_dicom_object_store" "object_store" {
-  count           = var.s3creds_product_key != null ? 1 : 0
+  count           = (var.allow_data_store != null && var.allow_data_store != false) ? 1 : 0
   config_url      = var.dss_config_url
   organization_id = var.organization_id
   force_delete    = var.force_delete_object_store
@@ -121,7 +124,7 @@ resource "hsdp_dicom_object_store" "object_store" {
 
 # Few clients uses Default Object Store for all the orgs. Hence it should only created based on need.
 resource "hsdp_dicom_repository" "dicom_repository" {
-  count                      = !(var.use_default_object_store_for_all_orgs == null || var.use_default_object_store_for_all_orgs == false) ? 0 : (var.s3creds_product_key != null ? 1 : 0)
+  count                      = !(var.use_default_object_store_for_all_orgs == null || var.use_default_object_store_for_all_orgs == false) ? 0 : ((var.allow_data_store != null && var.allow_data_store != false) ? 1 : 0)
   config_url                 = var.dss_config_url
   repository_organization_id = var.repository_organization_id
   organization_id            = var.organization_id
@@ -135,8 +138,6 @@ resource "hsdp_iam_role" "role_org_admin" {
   permissions = [
     "APPLICATION.READ",
     "APPLICATION.WRITE",
-    # The following role does not currently exist in IAM
-    #"APPLICATION.DELETE",
     "CLIENT.READ",
     "CLIENT.WRITE",
     "PERMISSION.READ",
@@ -146,8 +147,6 @@ resource "hsdp_iam_role" "role_org_admin" {
     "USER.READ",
     "USER.WRITE",
     "SERVICE.DELETE",
-    # The following role does not currently exist in IAM
-    #"ROLE.DELETE",
     "GROUP.READ",
     "GROUP.WRITE",
     # Below permissions are needed for CDR onboarding and offboarding
@@ -182,7 +181,7 @@ resource "hsdp_iam_role" "role_dicom_admin" {
   managing_organization = var.organization_id
 }
 
-resource "hsdp_iam_group" "grp_dicom_admin" {
+resource "hsdp_iam_group" "grp_dicom_admins" {
   name                  = "${local.prefix}GRP_DICOM_ADMIN_TF"
   description           = "GRP_DICOM_ADMIN_TF - Terraform managed"
   roles                 = [hsdp_iam_role.role_dicom_admin.id, hsdp_iam_role.role_dicom_user.id]
@@ -217,4 +216,19 @@ resource "hsdp_iam_group" "grp_dicom_users" {
   roles                 = [hsdp_iam_role.role_dicom_user.id]
   users                 = data.hsdp_iam_user.user.*.id
   managing_organization = var.organization_id
+}
+
+data "hsdp_cdr_fhir_store" "cdr_onboard" {
+  base_url    = var.cdr_base_url
+  fhir_org_id = var.organization_id
+}
+
+# first onbord the managing org
+resource "hsdp_cdr_org" "root_onboard" {
+  fhir_store   = data.hsdp_cdr_fhir_store.cdr_onboard.endpoint
+  org_id       = var.organization_id
+  name         = "Managing Org - ${var.organization_id}"
+  purge_delete = var.purge_cdr_data
+
+  depends_on = [hsdp_iam_group.grp_dicom_admins]
 }

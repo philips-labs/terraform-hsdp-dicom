@@ -8,8 +8,8 @@ resource "hsdp_s3creds_policy" "policy" {
   policy = <<POLICY
 {
   "conditions": {
-    "managingOrganizations": [ "${var.tenant_organization_id}" ],
-    "groups": [ "${hsdp_iam_group.grp_dicom_s3creds.name}" ]
+    "managingOrganizations": [ "${var.managing_root_organization_id}" ],
+    "groups": [ "${var.s3creds_group_name}" ]
   },
   "allowed": {
     "resources": [ "${var.tenant_organization_id}/*" ],

@@ -14,7 +14,7 @@ resource "hsdp_iam_proposition" "prop_dicom" {
 
 resource "hsdp_iam_application" "app_dicom" {
   name           = "APP_DICOM_TF"
-  description    = "APP_DICOM_TF - Terraform managed"
+  description    = "APP_DICOM_TF - Terraform managed - Shared"
   proposition_id = hsdp_iam_proposition.prop_dicom.id
 }
 
@@ -111,7 +111,6 @@ resource "hsdp_iam_group" "grp_dicom_cdr" {
 }
 
 resource "hsdp_iam_service" "svc_dicom_s3creds" {
-  count          = var.s3creds_product_key != null ? 1 : 0
   name           = "SVC_DICOM_S3CREDS_TF"
   description    = "SVC_DICOM_S3CREDS_TF - Terraform managed - shared"
   application_id = hsdp_iam_application.app_dicom.id
@@ -121,7 +120,6 @@ resource "hsdp_iam_service" "svc_dicom_s3creds" {
 }
 
 resource "hsdp_iam_role" "role_dicom_s3creds" {
-  count       = var.s3creds_product_key != null ? 1 : 0
   name        = "ROLE_DICOM_S3CREDS_TF"
   description = "ROLE_DICOM_S3CREDS_TF - Terraform managed - shared"
 
@@ -133,17 +131,16 @@ resource "hsdp_iam_role" "role_dicom_s3creds" {
 }
 
 resource "hsdp_iam_group" "grp_dicom_s3creds" {
-  count                 = var.s3creds_product_key != null ? 1 : 0
   name                  = "${local.prefix}GRP_DICOM_S3CREDS_TF"
   description           = "GRP_DICOM_S3CREDS_TF - Terraform managed - shared"
-  roles                 = [hsdp_iam_role.role_dicom_s3creds.*.id]
+  roles                 = [hsdp_iam_role.role_dicom_s3creds.id]
   users                 = data.hsdp_iam_user.admin.*.id
-  services              = [hsdp_iam_service.svc_dicom_s3creds.*.id]
+  services              = [hsdp_iam_service.svc_dicom_s3creds.id]
   managing_organization = var.organization_id
 }
 
 resource "hsdp_dicom_object_store" "object_store" {
-  count           = var.s3creds_product_key != null ? 1 : 0
+  count           = (var.allow_data_store != null && var.allow_data_store != false) ? 1 : 0
   config_url      = var.dss_config_url
   organization_id = var.organization_id
   force_delete    = var.force_delete_object_store
@@ -154,8 +151,8 @@ resource "hsdp_dicom_object_store" "object_store" {
     bucket_name = var.s3creds_bucket_name
     folder_path = "${var.organization_id}/"
     service_account {
-      service_id            = hsdp_iam_service.svc_dicom_s3creds[count.index].service_id
-      private_key           = replace(hsdp_iam_service.svc_dicom_s3creds[count.index].private_key, "\n", "")
+      service_id            = hsdp_iam_service.svc_dicom_s3creds.service_id
+      private_key           = replace(hsdp_iam_service.svc_dicom_s3creds.private_key, "\n", "")
       access_token_endpoint = "${data.hsdp_config.iam.url}/oauth2/access_token"
       token_endpoint        = "${data.hsdp_config.iam.url}/authorize/oauth2/token"
     }
@@ -163,7 +160,7 @@ resource "hsdp_dicom_object_store" "object_store" {
 }
 
 resource "hsdp_dicom_repository" "dicom_repository" {
-  count                      = var.s3creds_product_key != null ? 1 : 0
+  count                      = (var.allow_data_store != null && var.allow_data_store != false) ? 1 : 0
   config_url                 = var.dss_config_url
   repository_organization_id = var.repository_organization_id
   organization_id            = var.organization_id

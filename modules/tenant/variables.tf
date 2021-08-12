@@ -95,7 +95,7 @@ variable "dicom_users" {
 
 variable "purge_cdr_data" {
   description = "Force delete CDR data for offboarding"
-  default     = false
+  default     = true
   type        = bool
 }
 
@@ -103,4 +103,19 @@ variable "random_prefix" {
   description = "Prefix names with a random prefix"
   type        = bool
   default     = false
+}
+
+variable "s3creds_service_id" {
+  default = "S3Creds service account service id"
+  type    = string
+}
+
+variable "s3creds_service_private_key" {
+  default = "S3Creds service account private key"
+  type    = string
+}
+
+variable "s3creds_group_name" {
+  default = "S3Creds group name"
+  type    = string
 }

@@ -49,14 +49,15 @@ variable "managing_root_definition" {
     organization_id                       = string
     admin_users                           = list(string)
     dicom_users                           = optional(list(string))
-    s3creds_bucket_name                   = optional(string)
-    s3creds_product_key                   = optional(string)
+    s3creds_bucket_name                   = string
+    s3creds_product_key                   = string
     force_delete_object_store             = optional(bool)
     use_default_object_store_for_all_orgs = optional(bool)
     repository_organization_id            = optional(string)
     shared_cdr_service_account_id         = optional(string)
     mpi_endpoint                          = optional(string)
     purge_cdr_data                        = optional(bool)
+    allow_data_store                      = optional(bool)
   })
   default = null
 }
@@ -64,12 +65,13 @@ variable "managing_root_definition" {
 variable "tenant_definitions" {
   description = "List of tenant configurations"
   type = list(object({
-    managing_root_organization_id = string
+    managing_root_organization_id = optional(string)
     tenant_organization_id        = string
     admin_users                   = optional(list(string))
     dicom_users                   = optional(list(string))
-    s3creds_bucket_name           = optional(string)
-    s3creds_product_key           = optional(string)
+    s3creds_service_id            = optional(string)
+    s3creds_service_private_key   = optional(string)
+    s3creds_group_name            = optional(string)
     force_delete_object_store     = optional(bool)
     repository_organization_id    = optional(string)
     purge_cdr_data                = optional(bool)

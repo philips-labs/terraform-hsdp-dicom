@@ -41,6 +41,10 @@ variable "dss_config_url" {
   type        = string
 }
 
+variable "cdr_base_url" {
+  description = "CDR Base URL which is provided for DICOM Store onboarding (E.g: https://cdr-example.us-east.philips-healthsuite.com)"
+}
+
 variable "use_default_object_store_for_all_orgs" {
   description = "Use the same object store for all the sub orgs/tenanents"
   type        = bool
@@ -84,4 +88,10 @@ variable "purge_cdr_data" {
   description = "Force delete CDR data for offboarding"
   default     = false
   type        = bool
+}
+
+variable "allow_data_store" {
+  description = "Create object store at managing root organization"
+  type        = bool
+  default     = false
 }
