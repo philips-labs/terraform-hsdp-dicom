@@ -31,7 +31,9 @@ resource "hsdp_iam_role" "role_dicom_cdr" {
     "ALL.WRITE",
     "TASK.READ",
     "TASK.WRITE",
-    "CP-DICOM.UPLOAD"
+    "CP-DICOM.UPLOAD",
+    "CP-DICOM.MEDIAIMPORT",
+    "CP-DICOM.MEDIAEXPORT"
   ]
   managing_organization = var.organization_id
 }
