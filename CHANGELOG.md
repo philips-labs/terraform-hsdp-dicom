@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 ## v0.1.5
-- S3Creds Service Account will ONLY created in managing root organization and same will be used for tenant organizations. This help in managing of one service account.
-- Changed `s3creds_product_key` and `s3creds_bucket_name` are mandatory fields in managing_root_definition. tenant_definitions will use the same s3creds details, so no need to pass explicit.
-- Introduced `allow_data_store` optional field in managing_root_definition. This can be set to true if you want store data even in the managing root organization.
+- S3Creds Service Account is created in managing root organization and same will be used for tenant organizations. This reducing the managing multiple service accounts.
+- Made `s3creds_product_key` and `s3creds_bucket_name` mandatory fields in managing_root_definition. tenant_definitions will use the same s3creds details, so no need to pass them explicitly.
+- Introduced `allow_data_store` optional field in managing_root_definition. This can be set to true if you want to store data in the managing root organization.
 - Refactored redundant `managing_root_organization_id` from tenant_definitions
 
 ## v0.1.4

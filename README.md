@@ -1,19 +1,42 @@
 <img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" width="500px">
 
-# HSDP DICOM Store module
+# HSDP DICOM Store
+The HSDP DICOM Store service provides cloud-based storage for Digital Imaging and Communications in Medicine (DICOM) Data as part of the HSDP Store. It enables standards-based interoperability between enabled apps and devices with third-party systems via DICOMweb standard interfaces.
+
+To read more, [Click Here](https://www.hsdp.io/documentation/dicom-store)
+
+## Overiew
+This project helps to configuration of HSDP DICOM Store and HSDP DICOM Gateway. Client can reference or use this project. Client can also use the terraform resources directly and automate as per the need.
+
+DICOM Store Dedicated Instance Use Case
+
+<img src="/images/dedicated.png" alt="Dedicated Setup Use Case Example"/>
+
+DICOM Store Shared Instance Use Case
+
+<img src="/images/shared.png" alt="Dedicated Setup Use Case Example"/>
+
+## Scope
+* Responsible for creating role/groups/service accounts etc in HSDP IAM as per DICOM Store Requirements.
+* Responsible for creating S3Creds policies.
+* Responsible for posting the configuration into DICOM Store.
+
+## Out of Scope
+* Creating IAM Organizations.
+* Creating LCM policies as described in the DICOM Store documentation.
+
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
-|[hsdp](https://registry.terraform.io/modules/philips-labs/dicom/hsdp/latest) | >= 0.18.8 |
+|[hsdp](https://registry.terraform.io/modules/philips-labs/dicom/hsdp/latest) | >= 0.19.7 |
 |[Terraform](https://www.terraform.io/downloads.html) | >= v0.15.1|
 
 ## Providers
-
 | Name | Version |
 |------|---------|
-|[hsdp](https://registry.terraform.io/modules/philips-labs/dicom/hsdp/latest) | >= 0.18.8 |
+|[hsdp](https://registry.terraform.io/modules/philips-labs/dicom/hsdp/latest) | >= 0.19.7 |
 
 ## Modules
 
